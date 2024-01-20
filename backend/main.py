@@ -1,4 +1,4 @@
-from flask import FlFlask, render_template, request, send_from_directoryask
+from flask import Flask, render_template, request, send_from_directoryask
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS
@@ -8,12 +8,8 @@ app = Flask(__name__, static_folder='static')
 
 # DO NOT REMOVE
 print(platform.system())
-if platform.system() == "Darwin":
-    # FOR MAC USERS
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:3306/techteck24'
-else:
-    # FOR WINDOWS USERS
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/techteck24'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:3306/techteck24'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/techteck24'
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 

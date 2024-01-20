@@ -8,7 +8,7 @@ app = Flask(__name__, static_folder='static')
 
 # DO NOT REMOVE
 print(platform.system())
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:3306/techteck24'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:3306/techtrek24'
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/techteck24'
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -143,7 +143,6 @@ def delete_itinerary(itinerary_id):
       return jsonify({"message": "Itinerary deleted successfully"})
    else:
       return jsonify({"message": "Itinerary not found"}), 404
-
 
 
 if __name__ == '__main__':

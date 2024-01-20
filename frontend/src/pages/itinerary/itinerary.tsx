@@ -56,15 +56,17 @@ const ItineraryPage = () => {
         
         <Flex justifyContent="space-between" alignItems="center">
         {/* Itinerary Details */}
+        <Stack spacing={4}>
         <Box>
-          <Text fontWeight="bold">Title</Text>
+          <Text fontWeight="bold">Title: {title}</Text>
         </Box>
         <Box>
-          <Text>Country</Text>
+          <Text>Country: {country}</Text>
         </Box>
         <Box>
-          <Text>Budget</Text>
+          <Text>Budget: {budget}</Text>
         </Box>
+        </Stack>
         <Button colorScheme='teal' variant='solid' onClick={handleEdit}>
           Edit
         </Button>

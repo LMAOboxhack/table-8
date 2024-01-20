@@ -15,8 +15,9 @@ import {
   Link,
   Stack
 } from '@chakra-ui/react';
+import { signIn } from 'next-auth/react';
 import { useState } from 'react';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { FaLock, FaUserAlt } from "react-icons/fa";
 
 type IFormInputs = {
@@ -24,19 +25,24 @@ type IFormInputs = {
   password: string;
 };
 
-export default function Login() {
+export default function SignIn() {
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<IFormInputs>();
 
-  const onSubmit: SubmitHandler<IFormInputs> = (data) => console.log(data);
-
   const [showPassword, setShowPassword] = useState(false);
 
   const handleShowClick = () => setShowPassword(!showPassword);
 
+  const onSubmit = async (data: IFormInputs) => {
+    await signIn('credentials', {
+      email: data.email,
+      password: data.password,
+      callbackUrl: '/',
+    });
+  };
   return (
     <Flex
       flexDirection="column"

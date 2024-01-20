@@ -51,3 +51,14 @@ def generate_token(password):
     token = jwt.encode(msg, 'secret',
                        algorithm='HS256').decode('utf-8')
     return token
+
+def valid_login(username,password):
+    user = User.query.get(username)
+    if user:
+        correct_password = user.password
+        if password == correct_password:
+            return True
+        else:
+            abort(401, description="The password is incorrect.")
+    else:
+        abort(400, description="The username is not exist.")

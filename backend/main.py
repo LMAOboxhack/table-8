@@ -20,13 +20,13 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app)
 
 
-# generate token
+# generate a token based on unique username
 def generate_username_token(username):
    msg = {"username": username}
    token = jwt.encode(msg, "secret", algorithm="HS256").decode("utf-8")
    return token
 
-
+# decode token to check whether the user is logged in
 def decode_token(token):
    decode_token = jwt.decode(token, "secret", algorithms=["HS256"])
    username = decode_token["username"]
@@ -72,13 +72,13 @@ def valid_password(password):
       return True
 
 
-# generate token
+# generate hidden password
 def generate_token(password):
    msg = {"password": password}
    token = jwt.encode(msg, "secret", algorithm="HS256").decode("utf-8")
    return token
 
-
+# check password correction
 def correct_password(username, password):
    user = User.query.filter_by(username=username).first()
 
@@ -262,19 +262,18 @@ def dashboard(user_id):
          destination = Destination.query.filter_by(id=id.destination_id).first()
          destinations.append(destination.json())
 
-      output.append({"id": i.id, "title": i.title, "budget": i.budget, "country": country, "destinations": destinations})
+        output.append(
+            {
+                "title": i.title,
+                "budget": i.budget,
+                "country": country,
+                "destinations": destinations,
+            }
+        )
 
+    return output
 
-@app.route("/countries", methods=["GET"])
-def get_countries():
-   countries = Country.query.all()
-   return jsonify([country.json() for country in countries])
-
-@app.route("/destinations", methods=["GET"])
-def get_destinations():
-   destinations = Destination.query.all()
-   return jsonify([destination.json() for destination in destinations])
-
+# CREATE DESTINATION
 @app.route("/destination", methods=["POST"])
 def create_destination():
    data = request.get_json()

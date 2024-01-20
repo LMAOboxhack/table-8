@@ -74,7 +74,7 @@ INSERT INTO `itinerary` (`id`, `country_id`, `user_id`, `budget`, `title`) VALUE
 CREATE TABLE IF NOT EXISTS `itinerary_destination` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `destination_id` int(10) unsigned NOT NULL DEFAULT 0,
-  `itineray_id` int(10) unsigned NOT NULL DEFAULT 0,
+  `itinerary_id` int(10) unsigned NOT NULL DEFAULT 0,
   KEY `PK` (`id`),
   KEY `IDDestinationFK` (`destination_id`),
   KEY `IDItineraryFK` (`itineray_id`),

@@ -27,6 +27,14 @@ def generate_token(username):
                      algorithm='HS256').decode('utf-8')
    return token
 
+def decode_token(token):
+    decode_token = jwt.decode(token, "secret", algorithms=["HS256"])
+    username = decode_token["username"]
+    username_exist = User.query.get(username)
+    if username_exist:
+        return True
+    else:
+        abort(401, description="Please login first.")
 # check name is between 1-50 characters inclusive in length
 def valid_name(name):
    if len(name) < 1:
@@ -239,31 +247,36 @@ def dashboard(user_id):
 
 @app.route("/destination", methods=["POST"])
 def create_destination():
-   data = request.get_json()
-   destination = Destination(
-      country_id=data["country_id"],
-      cost=data["cost"],
-      name=data["name"],
-      notes=data["notes"],
-   )
-   try:
-      db.session.add(destination)
-      db.session.commit()
-   except:
-      return jsonify({"message": "An error occurred creating the destination."}), 500
-   return jsonify(destination.json()), 201
+    data = request.get_json()
+    token = data["token"]
+    decode_token(token)
+    destination = Destination(
+        country_id=data["country_id"],
+        cost=data["cost"],
+        name=data["name"],
+        notes=data["notes"],
+    )
+    try:
+        db.session.add(destination)
+        db.session.commit()
+    except:
+        return jsonify({"message": "An error occurred creating the destination."}), 500
+    return jsonify(destination.json()), 201
+
 
 # UPDATE DESTINATION
 @app.route("/destination/<string:destination_id>", methods=["PUT"])
 def update_destination(destination_id):
-   destination = Destination.query.filter_by(destination_id=destination_id).first()
-   if destination:
-      data = request.get_json()
-      destination.country_id = data["country_id"]
-      destination.cost = data["cost"]
-      destination.name = data["name"]
-      destination.notes = data["notes"]
-      try:
+    destination = Destination.query.filter_by(destination_id=destination_id).first()
+    if destination:
+        data = request.get_json()
+        token = data["token"]
+        decode_token(token)
+        destination.country_id = data["country_id"]
+        destination.cost = data["cost"]
+        destination.name = data["name"]
+        destination.notes = data["notes"]
+        try:
             db.session.commit()
       except:
             return (
@@ -276,9 +289,12 @@ def update_destination(destination_id):
 # DELETE DESTINATION
 @app.route("/destination/<string:destination_id>", methods=["DELETE"])
 def delete_destination(destination_id):
-   destination = Destination.query.filter_by(destination_id=destination_id).first()
-   if destination:
-      try:
+    destination = Destination.query.filter_by(destination_id=destination_id).first()
+    if destination:
+        data = request.get_json()
+        token = data["token"]
+        decode_token(token)
+        try:
             db.session.delete(destination)
             db.session.commit()
       except:

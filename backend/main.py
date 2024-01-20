@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, send_from_directoryask
+from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS
@@ -17,6 +17,7 @@ db = SQLAlchemy(app)
 
 class Country(db.Model):
    tablename = 'country'
+   id = db.Column(db.Integer, primary_key=True)
    name = db.Column(db.String(50), nullable=False)
    
    def __init__(self, name):
@@ -28,6 +29,7 @@ class Country(db.Model):
 
 class Destination(db.Model):
    tablename = 'destination'
+   id = db.Column(db.Integer, primary_key=True)
    country_id = db.Column(db.Integer, db.ForeignKey('country.id'), nullable=False)
    cost = db.Column(db.Float, nullable=False)
    name = db.Column(db.String(50), nullable=False)
@@ -45,6 +47,7 @@ class Destination(db.Model):
 
 class User(db.Model):
    tablename = 'user'
+   id = db.Column(db.Integer, primary_key=True)
    first_name = db.Column(db.String(50), nullable=False)
    last_name = db.Column(db.String(50), nullable=False)
    password = db.Column(db.String(20), nullable=False)
@@ -62,6 +65,7 @@ class User(db.Model):
 
 class Itinerary(db.Model):
    tablename = 'itinerary'
+   id = db.Column(db.Integer, primary_key=True)
    country_id = db.Column(db.Integer, db.ForeignKey('country.id'), nullable=False)
    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
    budget = db.Column(db.Float, nullable=False)
@@ -79,6 +83,7 @@ class Itinerary(db.Model):
 
 class ItineraryDestination(db.Model):
    tablename = 'itinerary_destination'
+   id = db.Column(db.Integer, primary_key=True)
    destination_id = db.Column(db.Integer, db.ForeignKey('destination.id'), nullable=False)
    itinerary_id = db.Column(db.Integer, db.ForeignKey('itinerary.id'), nullable=False)
 

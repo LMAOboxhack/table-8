@@ -70,6 +70,17 @@ def generate_token(password):
                        algorithm='HS256').decode('utf-8')
     return token
 
+def correct_password(username, password):
+    user = User.query.get(username)
+    correct_password = user.password
+    if user:
+        if correct_password == password:
+            return True
+        else:
+            abort(401, description="Wrong password.")
+    else:
+        abort(401, description="The username is not exist.")
+
 class Country(db.Model):
     tablename = "country"
     id = db.Column(db.Integer, primary_key=True)
@@ -192,7 +203,7 @@ def login():
     data = request.get_json()
     hashed_password = generate_token(data['password'])
     token = generate_token(data['username'])
-    if V.correct_password(data['username'], hashed_password):
+    if correct_password(data['username'], hashed_password):
         return {
             "is_success": True,
             "token": token
@@ -211,7 +222,14 @@ def logout():
         "is_success": True
     }
 @app.route("/<string:user_id>/details", methods=['GET'])
-
+def dashboard(user_id):
+    user = User.query.filter_by(user_id=user_id)
+    destination = Destination.query.filter_by(user_id=user_id)
+    itinerarydestination = ItineraryDestination.query.filter_by(user_id=user_id)
+    itinerary = Itinerary.query.filter_by(user_id=user_id)
+    country = Country.query.filter_by(user_id=user_id)
+# itinerary title, budget, country, list of destination included
+    return True
 @app.route("/destination", methods=["POST"])
 def create_destination():
     data = request.get_json()

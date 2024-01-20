@@ -269,6 +269,14 @@ def dashboard(user_id):
 
     return output
 
+@app.route("/countries", methods=["GET"])
+def get_countries():
+    output = []
+    countries = Country.query.all()
+    for c in countries:
+        output.append(c.name)
+    return output
+
 # CREATE DESTINATION
 @app.route("/destination", methods=["POST"])
 def create_destination():

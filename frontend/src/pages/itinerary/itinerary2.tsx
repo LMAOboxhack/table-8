@@ -9,9 +9,12 @@ import {
     Td,
     TableCaption,
     TableContainer,
+    Flex,
+    Stack,
+    Box,
 } from '@chakra-ui/react'
 
-import { Button, ButtonGroup } from '@chakra-ui/react'
+import { Button, Text } from '@chakra-ui/react'
 import { Grid, GridItem } from '@chakra-ui/react'
 import { useDisclosure } from '@chakra-ui/react'
 import ItineraryPopup from '@/components/ItineraryPopup';
@@ -45,10 +48,23 @@ const ItineraryPage2 = () => {
 
     return (
         <div>
-            <Grid templateColumns='repeat(5, 1fr)' gap={4}>
-                <GridItem colSpan={2} h='10'><h1>List of Destinations</h1></GridItem>
+            {/* <Grid templateColumns='repeat(5, 1fr)' gap={4}>
+                <GridItem colSpan={2} h='10'>
+                    <Text fontSize="xl" fontWeight="bold">List of Destinations</Text>
+                </GridItem>
                 <GridItem colStart={4} colEnd={6} h='10'><Button colorScheme='blackAlpha' onClick={onCreateOpen}>Create Destination</Button></GridItem>
-            </Grid>
+            </Grid> */}
+
+            <Flex justifyContent="space-between" alignItems="center">
+                <Stack spacing={4}>
+                    <Box>
+                        <Text fontWeight="bold">List of Destinations</Text>
+                    </Box>
+                </Stack>
+                <Box>
+                    <Button colorScheme='blackAlpha' onClick={onCreateOpen}>Create Destination</Button>
+                </Box>
+            </Flex>
             <div>
                 <TableContainer>
                     <Table size='lg'>

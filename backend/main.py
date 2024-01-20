@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 import platform
-import validation as V
+import tt1_8.backend.classes.validation as V
 import jwt
 
 app = Flask(__name__, static_folder="static")
@@ -210,7 +210,7 @@ def logout():
     return {
         "is_success": True
     }
-@app.route("/<string:user_id>/")
+@app.route("/<string:user_id>/details", methods=['GET'])
 
 @app.route("/destination", methods=["POST"])
 def create_destination():

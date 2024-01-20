@@ -1,4 +1,4 @@
-import tt1_8.backend.validation as V
+import tt1_8.backend.classes.validation as V
 from flask import jsonify, request
 from main import app, db, User
 

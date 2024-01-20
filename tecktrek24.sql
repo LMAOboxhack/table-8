@@ -96,7 +96,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `first_name` varchar(50) NOT NULL,
   `last_name` varchar(50) NOT NULL,
-  `password` varchar(20) NOT NULL,
+  `password` varchar(1000) NOT NULL,
   `username` varchar(20) NOT NULL,
   KEY `PK` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

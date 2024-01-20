@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 import platform
-import tt1_8.backend.classes.validation as V
+# import tt1_8.backend.classes.validation as V
 import jwt
 
 app = Flask(__name__, static_folder="static")
@@ -12,7 +12,7 @@ app = Flask(__name__, static_folder="static")
 print(platform.system())
 app.config[
     "SQLALCHEMY_DATABASE_URI"
-] = "mysql+mysqlconnector://root@localhost:3306/techtrek24"
+] = "mysql+mysqlconnector://root:root@localhost:3306/techtrek24"
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/techteck24'
 
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
@@ -110,7 +110,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     first_name = db.Column(db.String(50), nullable=False)
     last_name = db.Column(db.String(50), nullable=False)
-    password = db.Column(db.String(20), nullable=False)
+    password = db.Column(db.String(1000), nullable=False)
     username = db.Column(db.String(20), nullable=False)
 
     def init(self, username, first_name, last_name, password):

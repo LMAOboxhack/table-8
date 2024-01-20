@@ -229,6 +229,15 @@ def dashboard(user_id):
     itinerary = Itinerary.query.filter_by(user_id=user_id)
     country = Country.query.filter_by(user_id=user_id)
 # itinerary title, budget, country, list of destination included
+    itinerary_title = itinerary.title
+    itinerary_id = itinerary.id
+    budget = itinerary.budget
+    country = country.name
+    dict_destination = {}
+    while list_of_destination_id:
+        list_of_itinerary_id = itinerarydestination.query.filter_by(itinerary_id=itinerary_id)
+        list_of_destination_id = list_of_itinerary_id.destination_id
+        list_destination = destination.query.filter_by(id = list_of_destination_id)
     return True
 @app.route("/destination", methods=["POST"])
 def create_destination():

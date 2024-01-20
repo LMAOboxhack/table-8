@@ -10,13 +10,9 @@ from werkzeug.exceptions import HTTPException
 import smtplib
 from email.mime.text import MIMEText
 
-import auth, customer, restaurant, validation, voucher, picture, message
-from search import search_restaurant
+import auth, itinerary, backend.classes.destination as destination, validation
 import validation as V
-import comment
-import friend
-import recommendation
-import subscription
+
 
 APP = Flask(__name__)
 CORS(APP)
@@ -343,7 +339,7 @@ def register():
     data = request.get_json()
     return dumps(
         auth.auth_register(
-            data['name'], data['email'], data['password'], data['type']
+            data['first_name'], data['last_name'], data['username'], data['password']
         )
     )
 
@@ -354,7 +350,7 @@ def login():
     data = request.get_json()
     return dumps(
         auth.auth_login(
-            data['type'], data['email'], data['password']
+            data['username'], data['password']
         )
     )
 

@@ -13,6 +13,7 @@ const DashboardCard: React.FC<any> = () => {
         bgPosition="center"
         position="relative"
         overflow="hidden"
+        minWidth="240px"
       >
         <Box
           position="absolute"
@@ -33,7 +34,7 @@ const DashboardCard: React.FC<any> = () => {
             New
           </Badge>
           <Box
-            color="gray.800"
+            color="primary.text"
             fontWeight="semibold"
             letterSpacing="wide"
             fontSize="xs"
@@ -45,8 +46,8 @@ const DashboardCard: React.FC<any> = () => {
           </Box>
         </Box>
       </Box>
-      <Box display="flex" alignItems="baseline" bg="#F5F5F5" p="3">
-        <Box as="span" ml="2" color="gray.800" fontSize="sm">
+      <Box display="flex" alignItems="baseline" bg="primary.background" p="3">
+        <Box as="span" ml="2" color="primary.text" fontSize="sm">
           <p>Country</p>
           <p>$ Budget</p>
         </Box>

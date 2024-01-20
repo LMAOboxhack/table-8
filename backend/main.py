@@ -241,7 +241,9 @@ def logout():
 def dashboard(user_id):
     itinerary = Itinerary.query.filter_by(user_id=user_id)
     output = []
-
+    data = request.get_json()
+    token = data["token"]
+    decode_token(token)
     for i in itinerary:
         country = Country.query.filter_by(id=i.country_id).first().json()
 

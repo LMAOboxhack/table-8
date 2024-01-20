@@ -278,13 +278,13 @@ def update_destination(destination_id):
         destination.notes = data["notes"]
         try:
             db.session.commit()
-      except:
-            return (
-               jsonify({"message": "An error occurred updating the destination."}),
-               500,
-            )
-      return jsonify(destination.json()), 200
-   return jsonify({"message": "destination not found."}), 404
+         except:
+               return (
+                  jsonify({"message": "An error occurred updating the destination."}),
+                  500,
+               )
+         return jsonify(destination.json()), 200
+      return jsonify({"message": "destination not found."}), 404
 
 # DELETE DESTINATION
 @app.route("/destination/<string:destination_id>", methods=["DELETE"])
@@ -297,13 +297,13 @@ def delete_destination(destination_id):
         try:
             db.session.delete(destination)
             db.session.commit()
-      except:
-            return (
-               jsonify({"message": "An error occurred deleting the destination."}),
-               500,
-            )
-      return jsonify({"message": "destination deleted."}), 200
-   return jsonify({"message": "destination not found."}), 404
+         except:
+               return (
+                  jsonify({"message": "An error occurred deleting the destination."}),
+                  500,
+               )
+         return jsonify({"message": "destination deleted."}), 200
+      return jsonify({"message": "destination not found."}), 404
 
 
 # CREATE ITINERARY

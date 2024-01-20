@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   VStack,
   Stack,
@@ -37,6 +37,8 @@ const ItineraryPage = () => {
   const [title, setTitle] = useState(''); 
   const [country, setCountry] = useState(''); 
   const [budget, setBudget] = useState(''); 
+  // const { token } = useSession();
+
 
   const handleEdit = () => {
     // Set the form values to current itinerary details
@@ -48,9 +50,31 @@ const ItineraryPage = () => {
 
   // Update this to handle the form submission
   const handleSubmit = () => {
+    // const reponse = await fetch()
+
     console.log('Submit', { title, country, budget });
     onClose(); // Close the modal
   };
+
+  const [destinations, setDestinations] = useState([])
+
+  useEffect(() => {
+    async function getDestinations() {
+      let response = await fetch('http://127.0.0.1:5000/itinerary', {
+          method: 'GET',
+          mode: 'cors',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({token:"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwYXNzd29yZCI6Im5kcDE5OTgifQ.fe3DWtqv4IySx4qK1j_vUetZHdtGZNsvRm2fkTtxzws"}),
+        });
+      response = await response.json();
+      setDestinations(response);
+    }
+
+    getDestinations();
+  }, []);
 
   return (
     <>
@@ -174,20 +198,7 @@ const ItineraryPage = () => {
                                 </Tr>
                             )
                         })} */}
-                        <Tr>
-                            <Td>Marina Bay Sands</Td>
-                            <Td isNumeric>50</Td>
-                            <Td>Iconic hotel with an infinity pool and stunning views of the city skyline. Open 24/7.</Td>
-                            <Td><Button onClick={onEditOpen} colorScheme='blackAlpha'>Edit</Button></Td>
-                            <Td><Button colorScheme='red'>Delete</Button></Td>
-                        </Tr>
-                        <Tr>
-                            <Td>Gardens by the Bay</Td>
-                            <Td isNumeric>30</Td>
-                            <Td>Futuristic park featuring Supertree Grove and Flower Dome conservatories. Open daily from 9 AM to 9 PM.</Td>
-                            <Td><Button colorScheme='blackAlpha'>Edit</Button></Td>
-                            <Td><Button colorScheme='red'>Delete</Button></Td>
-                        </Tr>
+                        {destinations}
                     </Tbody>
                     <Tfoot>
                         <Tr>

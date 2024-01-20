@@ -1,5 +1,7 @@
 import DashboardCard from '@/components/DashboardCards'
 import React, { useState, useEffect } from 'react'
+import { useRouter } from 'next/router'
+
 import axios from 'axios'
 
 import {
@@ -125,20 +127,24 @@ function Dashboard() {
   const handleOpen = () => {
     setIsOpen(true)
   }
+  const router = useRouter()
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault()
-
-    // const response = await fetch('http://localhost:5000/itinerary', {
-    //   method: 'POST',
-    //   mode: 'cors',
-    //   headers: {
-    //     Accept: 'application/json',
-    //     'Content-Type': 'application/json',
-    //   },
-    //   body: JSON.stringify({ username, password }),
-    // })
     console.log(formData)
+
+    const response = await fetch('http://localhost:5000/itinerary', {
+      method: 'POST',
+      mode: 'cors',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    })
+    if (response.ok) {
+      router.push('/1/itinerary') // Replace with your success route
+    }
   }
 
   return (

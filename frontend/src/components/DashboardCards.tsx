@@ -1,19 +1,26 @@
-import { Box, Text, Image, Badge, Divider } from '@chakra-ui/react'
-import { ItineraryDestinations } from '@/types/Itinerary'
+import { Box, Text, Image, Badge, Button } from '@chakra-ui/react'
+import { Itinerary } from '@/types/Itinerary'
 
-const DashboardCard: React.FC<any> = () => {
+const DashboardCard: React.FC<{ itinerary: Itinerary }> = ({ itinerary }) => {
   return (
-    <Box borderWidth="1px" borderRadius="lg" overflow="hidden">
+    <Box
+      borderWidth="1px"
+      display="flex"
+      flexDirection="column"
+      borderRadius="lg"
+      overflow="hidden"
+      minWidth="240px"
+    >
       <Box
         p="6"
         height="120px"
+        display="flex"
         alignItems="flex-start"
         justifyContent="flex-start"
         bgImage="url('https://media.istockphoto.com/id/1344771294/photo/happy-family-in-masks-enjoying-travel-together.webp?b=1&s=612x612&w=0&k=20&c=38vWekRjfDJTxPHNm4N-wpgbp-33XOH8JlBL_GvwBlI=')"
         bgPosition="center"
         position="relative"
         overflow="hidden"
-        minWidth="240px"
       >
         <Box
           position="absolute"
@@ -42,14 +49,25 @@ const DashboardCard: React.FC<any> = () => {
             ml="2"
             zIndex={2}
           >
-            Title
+            {itinerary.title}
+          </Box>
+          <Box
+            color="primary.text"
+            fontWeight="semibold"
+            letterSpacing="wide"
+            fontSize="xs"
+            textTransform="uppercase"
+            ml="2"
+            zIndex={2}
+          >
+            <Button size="xs">x</Button>
           </Box>
         </Box>
       </Box>
       <Box display="flex" alignItems="baseline" bg="primary.background" p="3">
         <Box as="span" ml="2" color="primary.text" fontSize="sm">
-          <p>Country</p>
-          <p>$ Budget</p>
+          <p>{itinerary.country.name}</p>
+          <p>${itinerary.budget.toFixed(2)}</p>
         </Box>
       </Box>
     </Box>

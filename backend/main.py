@@ -220,22 +220,22 @@ def logout():
 # USER DETAILS
 @app.route("/<string:user_id>/details", methods=['GET'])
 def dashboard(user_id):
-   user = User.query.filter_by(user_id=user_id)
-   destination = Destination.query.filter_by(user_id=user_id)
-   itinerarydestination = ItineraryDestination.query.filter_by(user_id=user_id)
    itinerary = Itinerary.query.filter_by(user_id=user_id)
-   country = Country.query.filter_by(user_id=user_id)
-# itinerary title, budget, country, list of destination included
-    itinerary_title = itinerary.title
-    itinerary_id = itinerary.id
-    budget = itinerary.budget
-    country = country.name
-    dict_destination = {}
-    while list_of_destination_id:
-        list_of_itinerary_id = itinerarydestination.query.filter_by(itinerary_id=itinerary_id)
-        list_of_destination_id = list_of_itinerary_id.destination_id
-        list_destination = destination.query.filter_by(id = list_of_destination_id)
-    return True
+   output = []
+
+   for i in itinerary:
+      country = Country.query.filter_by(id=i.country_id).first().json()
+
+      destinations = []
+      itinerary_destination = ItineraryDestination.query.filter_by(itinerary_id=i.id)
+
+      for id in itinerary_destination:
+         destination = Destination.query.filter_by(id=id.destination_id).first()
+         destinations.append(destination.name)
+
+      output.append({"title": i.title, "budget": i.budget, "country": country, "destinations": destinations})
+
+   return output
 
 @app.route("/destination", methods=["POST"])
 def create_destination():

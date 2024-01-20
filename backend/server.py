@@ -350,7 +350,7 @@ def login():
     data = request.get_json()
     return dumps(
         auth.auth_login(
-            data['type'], data['email'], data['password']
+            data['username'], data['password']
         )
     )
 

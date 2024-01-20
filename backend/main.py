@@ -4,7 +4,7 @@ from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 import platform
 
-app = Flask(__name__, static_folder="static")
+app = Flask(__name__)
 
 # DO NOT REMOVE
 print(platform.system())
@@ -12,8 +12,8 @@ app.config[
     "SQLALCHEMY_DATABASE_URI"
 ] = "mysql+mysqlconnector://root:root@localhost:3306/techtrek24"
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/techteck24'
-
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {"pool_recycle": 299}
 
 db = SQLAlchemy(app)
 
@@ -135,9 +135,9 @@ def create_destination():
     return jsonify(destination.json()), 201
 
 
-@app.route("/destination/<string:destination_id>", methods=["PUT"])
-def update_destination(destination_id):
-    destination = Destination.query.filter_by(destination_id=destination_id).first()
+@app.route("/destination/<string:id>", methods=["PUT"])
+def update_destination(id):
+    destination = Destination.query.filter_by(id=id).first()
     if destination:
         data = request.get_json()
         destination.country_id = data["country_id"]
@@ -155,9 +155,10 @@ def update_destination(destination_id):
     return jsonify({"message": "destination not found."}), 404
 
 
-@app.route("/destination/<string:destination_id>", methods=["DELETE"])
-def delete_destination(destination_id):
-    destination = Destination.query.filter_by(destination_id=destination_id).first()
+@app.route("/destination/<string:id>", methods=["DELETE"])
+def delete_destination(id):
+    
+    destination = Destination.query.filter_by(id=id).first()
     if destination:
         try:
             db.session.delete(destination)

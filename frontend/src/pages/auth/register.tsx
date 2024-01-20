@@ -17,7 +17,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { FaLock, FaUserAlt } from "react-icons/fa";
 
 type IFormInputs = {
-  email: string;
+  username: string;
   password: string;
 };
 

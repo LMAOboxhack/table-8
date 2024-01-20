@@ -6,8 +6,8 @@ export const authOptions: AuthOptions = {
     CredentialsProvider({
       id: 'credentials',
       credentials: {
-        email: {
-          label: 'E-mail',
+        username: {
+          label: 'Username',
           type: 'text',
         },
         password: {
@@ -16,52 +16,25 @@ export const authOptions: AuthOptions = {
         },
       },
       async authorize(credentials) {
-        // const client = await clientPromise;
-        // const accountsCollection = client
-        //   .db(process.env.DB_NAME)
-        //   .collection('accounts');
+        const username = credentials?.username;
+        const password = credentials?.password;
 
-        // const email = credentials?.email?.toLowerCase();
-        // const account = await accountsCollection.findOne({ email });
+        const response = await fetch('http://127.0.0.1:5000/auth/login', {
+          method: 'POST',
+          mode: 'cors',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ username, password }),
+        });
 
-        // if (!account) {
-        //   throw new Error('Account does not exist.');
-        // }
+        const responseData = await response.json();
 
-        // // Validate password
-        // const passwordIsValid = await bcrypt.compare(
-        //   credentials?.password || '',
-        //   account.password || ''
-        // );
-
-        // if (!passwordIsValid) {
-        //   throw new Error('Invalid credentials');
-        // }
-
-        // // Check if account is approved
-        // if (!account.isApproved) {
-        //   throw new Error('Account not approved yet.');
-        // }
-
-        // const usersCollection = client
-        //   .db(process.env.DB_NAME)
-        //   .collection('users');
-
-        // const user = await usersCollection.findOne({ _id: account.user });
-
-        // return {
-        //   id: account._id.toString(),
-        //   name: user?.name || '',
-        //   email: account.email,
-        //   role: account.role,
-        // };
-
-        return {
-          id: '1',
-          name: 'test',
-          email: 'hello',
-          accessToken: 'test',
+        if (responseData.is_success) {
+          return { ...responseData.user, accessToken: responseData.accessToken };
         }
+        return null;
       },
     }),
   ],

@@ -10,20 +10,21 @@ export interface Itinerary {
   title: String
   budget: number
   country: Country
-  id: number
-  user: User
-  itineraryDestinations: ItineraryDestinations[]
+  id?: number
+  user?: User
+  destinations: Destination[]
 }
 
 export type Destination = {
-  id: number
-  country: Country
+  id?: number
+  country_id?: number
+  country?: Country
   name: string
-  cost: number
-  notes: string
+  cost?: number
+  notes?: string
 }
 
 export type Country = {
-  id: number
+  id?: number
   name: string
 }

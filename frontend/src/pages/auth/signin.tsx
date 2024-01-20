@@ -21,7 +21,7 @@ import { useForm } from 'react-hook-form';
 import { FaLock, FaUserAlt } from "react-icons/fa";
 
 type IFormInputs = {
-  email: string;
+  username: string;
   password: string;
 };
 
@@ -38,7 +38,7 @@ export default function SignIn() {
 
   const onSubmit = async (data: IFormInputs) => {
     await signIn('credentials', {
-      email: data.email,
+      username: data.username,
       password: data.password,
       callbackUrl: '/',
     });
@@ -66,17 +66,17 @@ export default function SignIn() {
                 spacing={4}
                 p="1rem"
               >
-                <FormControl isInvalid={errors.email === null}>
+                <FormControl isInvalid={errors.username === null}>
                   <InputGroup>
                     <InputLeftElement
                       pointerEvents="none"
                     >
                       <FaUserAlt color="gray.300" />
                     </InputLeftElement>
-                    <Input type="email" placeholder="E-mail Address" {...register('email')} />
+                    <Input type="text" placeholder="Username" {...register('username')} />
                   </InputGroup>
                   <FormErrorMessage>
-                    {errors.email && errors.email.message?.toString()}
+                    {errors.username && errors.username.message?.toString()}
                   </FormErrorMessage>
                 </FormControl>
                 <FormControl isInvalid={errors.password === null}>
@@ -90,6 +90,7 @@ export default function SignIn() {
                     <Input
                       type={showPassword ? "text" : "password"}
                       placeholder="Password"
+                      {...register('password')}
                     />
                     <InputRightElement width="4.5rem">
                       <Button h="1.75rem" size="sm" onClick={handleShowClick}>

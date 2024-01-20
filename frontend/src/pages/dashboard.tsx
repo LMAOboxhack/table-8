@@ -25,10 +25,12 @@ import {
 } from '@chakra-ui/react'
 import { ChevronRightIcon } from '@chakra-ui/icons'
 import { Itinerary } from '@/types/Itinerary'
+import { log } from 'console'
 
 const data: Itinerary[] = [
   {
     budget: 500.0,
+    id: 111,
     country: {
       id: 1,
       name: 'Singapore',
@@ -59,7 +61,6 @@ const data: Itinerary[] = [
           'Fun-filled island resort with beaches, theme parks, and various attractions. Open daily from 10 AM to 7 PM.',
       },
     ],
-    id: 1,
     title: 'Sightseeing in Singapore',
   },
   {

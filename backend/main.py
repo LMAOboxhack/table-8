@@ -246,9 +246,9 @@ def logout():
 def dashboard(user_id):
     itinerary = Itinerary.query.filter_by(user_id=user_id)
     output = []
-    data = request.get_json()
-    token = data["token"]
-    decode_token(token)
+#    data = request.get_json()
+#    token = data["token"]
+#    decode_token(token)
     for i in itinerary:
         country = Country.query.filter_by(id=i.country_id).first().json()
 
@@ -283,8 +283,8 @@ def get_countries():
 @app.route("/destination", methods=["POST"])
 def create_destination():
     data = request.get_json()
-    token = data["token"]
-    decode_token(token)
+#    token = data["token"]
+#    decode_token(token)
     destination = Destination(
         country_id=data["country_id"],
         cost=data["cost"],
@@ -305,8 +305,8 @@ def update_destination(destination_id):
     destination = Destination.query.filter_by(id=destination_id).first()
     if destination:
         data = request.get_json()
-        token = data["token"]
-        decode_token(token)
+#        token = data["token"]
+#        decode_token(token)
         destination.country_id = data["country_id"]
         destination.cost = data["cost"]
         destination.name = data["name"]
@@ -327,9 +327,9 @@ def update_destination(destination_id):
 def delete_destination(destination_id):
     destination = Destination.query.filter_by(id=destination_id).first()
     if destination:
-        data = request.get_json()
-        token = data["token"]
-        decode_token(token)
+#        data = request.get_json()
+#        token = data["token"]
+#        decode_token(token)
         try:
             db.session.delete(destination)
             db.session.commit()

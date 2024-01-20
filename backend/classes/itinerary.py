@@ -1,19 +1,7 @@
 from flask import jsonify, request
 from main import app, db, Itinerary
 
-@app.route('/itineraries', methods=['GET'])
-def get_itineraries():
-    itineraries = Itinerary.query.all()
-    return jsonify([itinerary.json() for itinerary in itineraries])
-
-@app.route('/itinerary/<itinerary_id>', methods=['GET'])
-def get_itinerary(itinerary_id):
-    itinerary = Itinerary.query.get(itinerary_id)
-    if itinerary:
-        return jsonify(itinerary.json())
-    else:
-        return jsonify({"message": "Itinerary not found"}), 404
-
+# CREATE ITINERARY
 @app.route('/itinerary', methods=['POST'])
 def create_itinerary():
     data = request.json
@@ -22,6 +10,22 @@ def create_itinerary():
     db.session.commit()
     return jsonify(new_itinerary.json()), 201
 
+# GET ALL ITINERARIES
+@app.route('/itinerary', methods=['GET'])
+def get_itineraries():
+    itineraries = Itinerary.query.all()
+    return jsonify([itinerary.json() for itinerary in itineraries])
+
+# GET 1 ITINERARY BASED ON ITINERARY_ID
+@app.route('/itinerary/<itinerary_id>', methods=['GET'])
+def get_itinerary(itinerary_id):
+    itinerary = Itinerary.query.get(itinerary_id)
+    if itinerary:
+        return jsonify(itinerary.json())
+    else:
+        return jsonify({"message": "Itinerary not found"}), 404
+
+# UPDATE ITINERARY BASED ON ITINERARY_ID
 @app.route('/itinerary/<itinerary_id>', methods=['PUT'])
 def update_itinerary(itinerary_id):
     itinerary = Itinerary.query.get(itinerary_id)
@@ -36,6 +40,7 @@ def update_itinerary(itinerary_id):
     else:
         return jsonify({"message": "Itinerary not found"}), 404
 
+# DELETE ITINERARY BASED ON ITINERARY_ID
 @app.route('/itinerary/<itinerary_id>', methods=['DELETE'])
 def delete_itinerary(itinerary_id):
     itinerary = Itinerary.query.get(itinerary_id)

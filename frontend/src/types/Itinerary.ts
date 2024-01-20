@@ -1,21 +1,18 @@
+import type { User } from './User'
+
+export interface ItineraryDestinations {
+  id: number
+  itinerary: Itinerary
+  destination: Destination
+}
+
 export interface Itinerary {
   title: String
   budget: number
   country: Country
   id: number
-  userId: number
+  user: User
   itineraryDestinations: ItineraryDestinations[]
-}
-
-export interface ItineraryDestinations {
-  id: number
-  itineraryId: number
-  destination: Destination
-}
-
-export type Country = {
-  id: number
-  name: string
 }
 
 export type Destination = {
@@ -24,4 +21,9 @@ export type Destination = {
   name: string
   cost: number
   notes: string
+}
+
+export type Country = {
+  id: number
+  name: string
 }

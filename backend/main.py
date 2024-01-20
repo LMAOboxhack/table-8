@@ -1,9 +1,10 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, abort
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 import platform
-import validation as V
+import tt1_8.backend.classes.validation as V
+import jwt
 
 app = Flask(__name__)
 
@@ -18,6 +19,56 @@ app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {"pool_recycle": 299}
 
 db = SQLAlchemy(app)
 
+
+# generate token
+def generate_token(username):
+    msg = {
+        'username': username
+    }
+    token = jwt.encode(msg, 'secret',
+                       algorithm='HS256').decode('utf-8')
+    return token
+
+# check name is between 1-50 characters inclusive in length
+def valid_name(name):
+    if len(name) < 1:
+        abort(401, description="Name cannot be empty.")
+    elif len(name) > 50:
+        abort(401, description="Please enter a name between 1-50 characters long.")
+    else:
+        return True
+
+# check whether the username is already exist
+def valid_username(username):
+    username_exist = User.query.get(username)
+    if username_exist:
+        abort(401, description="Username is already exist.")
+    else:
+        return True
+
+# check password validation
+def valid_password(password):
+    if len(password) < 8:
+        abort(401, description="Password should contain at least 6 characters.")
+    elif len(password) > 20:
+        abort(401, description="length should be not be greater than 20.")
+    elif not any(char.isdigit() for char in password):
+        abort(401, description="Password should have at least one numeral.")         
+    elif not any(char.isupper() for char in password):
+        abort(401, description="Password should have at least one uppercase letter.")         
+    elif not any(char.islower() for char in password):
+        abort(401, description="Password should have at least one lowercase letter.")
+    else:
+        return True
+    
+# generate token
+def generate_token(password):
+    msg = {
+        'password': password
+    }
+    token = jwt.encode(msg, 'secret',
+                       algorithm='HS256').decode('utf-8')
+    return token
 
 class Country(db.Model):
     tablename = "country"
@@ -123,11 +174,11 @@ def register():
     """Calls the register function from auth.py"""
     data = request.get_json()
     password = data['password']
-    V.valid_name(data['first_name'])
-    V.valid_name(data['last_name'])
-    V.valid_username(data['username'])
-    V.valid_password(password)
-    hashed_password = V.generate_token(password)
+    valid_name(data['first_name'])
+    valid_name(data['last_name'])
+    valid_username(data['username'])
+    valid_password(password)
+    hashed_password = generate_token(password)
     new_user = User(first_name=data['first_name'], last_name=data['last_name'], username=data['username'], password=hashed_password)
     db.session.add(new_user)
     db.session.commit()
@@ -139,8 +190,8 @@ def register():
 def login():
     """Calls the login function from auth.py"""
     data = request.get_json()
-    hashed_password = V.generate_token(data['password'])
-    token = V.generate_token(data['username'])
+    hashed_password = generate_token(data['password'])
+    token = generate_token(data['username'])
     if V.correct_password(data['username'], hashed_password):
         return {
             "is_success": True,
@@ -159,6 +210,7 @@ def logout():
     return {
         "is_success": True
     }
+@app.route("/<string:user_id>/details", methods=['GET'])
 
 @app.route("/destination", methods=["POST"])
 def create_destination():

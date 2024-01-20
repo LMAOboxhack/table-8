@@ -37,12 +37,20 @@ export default function SignIn() {
   const handleShowClick = () => setShowPassword(!showPassword);
 
   const onSubmit = async (data: IFormInputs) => {
-    await signIn('credentials', {
+    const res = await signIn('credentials', {
       username: data.username,
       password: data.password,
       callbackUrl: '/',
+      redirect: false,
     });
-  };
+
+    if (res?.status !== 200) {
+      alert('Username or password incorrect. Please try again.');
+    } else {
+      window.location.href = '/';
+    }
+  }
+
   return (
     <Flex
       flexDirection="column"

@@ -33,8 +33,9 @@ export const authOptions: AuthOptions = {
 
         if (responseData.is_success) {
           return { ...responseData.user, accessToken: responseData.accessToken };
+        } else {
+          throw new Error('Invalid credentials.')
         }
-        return null;
       },
     }),
   ],
@@ -51,7 +52,7 @@ export const authOptions: AuthOptions = {
     async session({ session, token }) {
       session.user.accessToken = token
       return session
-    }
+    },
   }
 };
 

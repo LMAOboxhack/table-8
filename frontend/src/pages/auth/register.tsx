@@ -60,17 +60,17 @@ export default function Register() {
                 spacing={4}
                 p="1rem"
               >
-                <FormControl isInvalid={errors.email === null}>
+                <FormControl isInvalid={errors.username === null}>
                   <InputGroup>
                     <InputLeftElement
                       pointerEvents="none"
                     >
                       <FaUserAlt color="gray.300" />
                     </InputLeftElement>
-                    <Input type="email" placeholder="E-mail Address" {...register('email')} />
+                    <Input type="email" placeholder="Username" {...register('username')} />
                   </InputGroup>
                   <FormErrorMessage>
-                    {errors.email && errors.email.message?.toString()}
+                    {errors.username && errors.username.message?.toString()}
                   </FormErrorMessage>
                 </FormControl>
                 <FormControl isInvalid={errors.password === null}>

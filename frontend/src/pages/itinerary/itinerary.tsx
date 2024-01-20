@@ -1,71 +1,124 @@
-import React from 'react';
-import { DeleteIcon, EditIcon } from '@chakra-ui/icons';
-import { 
-  VStack, 
-  StackDivider, 
-  Box, 
-  Button, 
-  Flex, 
-  Text, 
-  Table, 
-  Thead, 
-  Tbody, 
-  Tr, 
-  Th, 
-  Td, 
-  IconButton, 
-  Heading 
+import React, { useState } from 'react';
+import {
+  VStack,
+  Stack,
+  StackDivider,
+  Box,
+  Button,
+  Flex,
+  Text,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  useDisclosure,
+  FormControl,
+  FormLabel,
+  Input,
 } from '@chakra-ui/react';
 
-
-// Define the type for a single destination
-type Destination = {
-  id: number;
-  name: string;
-  cost: number;
-  notes: string;
-};
-
-// Mock data for the destinations
-const destinations: Destination[] = [
-  { id: 1, name: 'Marina Bay Sands', cost: 1000, notes: 'Hi' },
-  { id: 2, name: 'Gardens By The Bay', cost: 500, notes: 'Bye' },
-];
-
 const ItineraryPage = () => {
-  // Function to calculate total cost
-//   const calculateTotalCost = (destinations: Destination[]): number => {
-//     return destinations.reduce((total, destination) => total + destination.cost, 0);
-//   };
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [title, setTitle] = useState(''); 
+  const [country, setCountry] = useState(''); 
+  const [budget, setBudget] = useState(''); 
+
+  const handleEdit = () => {
+    // Set the form values to current itinerary details
+    setTitle('');
+    setCountry('');
+    setBudget('');
+    onOpen(); // Open the modal
+  };
+
+  // Update this to handle the form submission
+  const handleSubmit = () => {
+    console.log('Submit', { title, country, budget });
+    onClose(); // Close the modal
+  };
 
   return (
-    <VStack
-      divider={<StackDivider borderColor='gray.200' />}
-      spacing={4}
-      align='stretch'
-      p={5}
-    >
-      {/* User Header */}
-      <Flex justifyContent="space-between" alignItems="center">
-        <Text fontSize="xl" fontWeight="bold">User's Itinerary</Text>
-        <Button colorScheme="red">Log out</Button>
-      </Flex>
-
-      {/* Itinerary Details */}
-      <Box>
-        <Text fontWeight="bold">Title</Text>
+    <div>
+      <VStack
+        divider={<StackDivider borderColor='gray.200' />}
+        spacing={4}
+        align='stretch'
+        p={5}
+      >
+        {/* User Header */}
+        <Flex justifyContent="space-between" alignItems="center">
+          <Text fontSize="xl" fontWeight="bold">User's Itinerary</Text>
+          <Button colorScheme="red">Log out</Button>
+        </Flex>
+        
+        <Flex justifyContent="space-between" alignItems="center">
+        {/* Itinerary Details */}
+        <Box>
+          <Text fontWeight="bold">Title</Text>
         </Box>
         <Box>
-        <Text>Country</Text>
+          <Text>Country</Text>
         </Box>
         <Box>
-        <Text>Budget</Text>
-      </Box>
-
+          <Text>Budget</Text>
+        </Box>
+        <Button colorScheme='teal' variant='solid' onClick={handleEdit}>
+          Edit
+        </Button>
+        </Flex>
+      </VStack>
       
+        
+        
+  
 
-      
-    </VStack>
+      {/* Edit Itinerary Modal */}
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Edit Itinerary</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody pb={6}>
+            <FormControl>
+              <FormLabel>Title</FormLabel>
+              <Input 
+                value={title} 
+                onChange={(e) => setTitle(e.target.value)} 
+                placeholder='Title' 
+              />
+            </FormControl>
+
+            <FormControl mt={4}>
+              <FormLabel>Country</FormLabel>
+              <Input 
+                value={country} 
+                onChange={(e) => setCountry(e.target.value)} 
+                placeholder='Country' 
+              />
+            </FormControl>
+
+            <FormControl mt={4}>
+              <FormLabel>Budget</FormLabel>
+              <Input 
+                value={budget} 
+                onChange={(e) => setBudget(e.target.value)} 
+                placeholder='Budget' 
+              />
+            </FormControl>
+          </ModalBody>
+
+          <ModalFooter>
+            <Button colorScheme='blue' mr={3} onClick={handleSubmit}>
+              Save
+            </Button>
+            <Button onClick={onClose}>Cancel</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+    </div>
   );
 };
 

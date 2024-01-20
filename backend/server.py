@@ -10,7 +10,7 @@ from werkzeug.exceptions import HTTPException
 import smtplib
 from email.mime.text import MIMEText
 
-import auth, itinerary, destination, validation
+import auth, itinerary, backend.classes.destination as destination, validation
 import validation as V
 
 

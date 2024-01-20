@@ -15,7 +15,6 @@ export const authOptions: AuthOptions = {
           type: 'password',
         },
       },
-      // connect with DB here
       async authorize(credentials) {
         // const client = await clientPromise;
         // const accountsCollection = client
@@ -59,7 +58,9 @@ export const authOptions: AuthOptions = {
 
         return {
           id: '1',
-          email: credentials?.email?.toLowerCase(),
+          name: 'test',
+          email: 'hello',
+          accessToken: 'test',
         }
       },
     }),
@@ -67,6 +68,18 @@ export const authOptions: AuthOptions = {
   session: {
     strategy: 'jwt',
   },
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.accessToken = user.accessToken;
+      }
+      return token
+    },
+    async session({ session, token }) {
+      session.user.accessToken = token
+      return session
+    }
+  }
 };
 
 export default NextAuth(authOptions)

@@ -11,7 +11,7 @@ app = Flask(__name__)
 print(platform.system())
 app.config[
     "SQLALCHEMY_DATABASE_URI"
-] = "mysql+mysqlconnector://root:root@localhost:3306/techtrek24"
+] = "mysql+mysqlconnector://root@localhost:3306/techtrek24"
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/techteck24'
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {"pool_recycle": 299}
@@ -230,7 +230,7 @@ def get_itineraries():
     return jsonify([itinerary.json() for itinerary in itineraries])
 
 # GET 1 ITINERARY BASED ON ITINERARY_ID
-
+@app.route('/itinerary/<itinerary_id>', methods=['GET'])
 def get_itinerary(itinerary_id):
     itinerary = Itinerary.query.get(itinerary_id)
     if itinerary:
@@ -239,7 +239,7 @@ def get_itinerary(itinerary_id):
         return jsonify({"message": "Itinerary not found"}), 404
 
 # UPDATE ITINERARY BASED ON ITINERARY_ID
-
+@app.route('/itinerary/<itinerary_id>', methods=['PUT'])
 def update_itinerary(itinerary_id):
     itinerary = Itinerary.query.get(itinerary_id)
     if itinerary:
@@ -254,7 +254,7 @@ def update_itinerary(itinerary_id):
         return jsonify({"message": "Itinerary not found"}), 404
 
 # DELETE ITINERARY BASED ON ITINERARY_ID
-
+@app.route('/itinerary/<itinerary_id>', methods=['DELETE'])
 def delete_itinerary(itinerary_id):
     itinerary = Itinerary.query.get(itinerary_id)
     if itinerary:

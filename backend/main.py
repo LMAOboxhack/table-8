@@ -11,7 +11,7 @@ CORS(app)
 print(platform.system())
 app.config[
    "SQLALCHEMY_DATABASE_URI"
-] = "mysql+mysqlconnector://root:gioflame@localhost:3306/techtrek24"
+] = "mysql+mysqlconnector://root:password@localhost:3306/techtrek24"
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/techteck24'
 
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False

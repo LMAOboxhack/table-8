@@ -297,15 +297,15 @@ def delete_destination(destination_id):
         token = data["token"]
         decode_token(token)
     try:
-            db.session.delete(destination)
-            db.session.commit()
-         except:
-               return (
-                  jsonify({"message": "An error occurred deleting the destination."}),
-                  500,
-               )
-         return jsonify({"message": "destination deleted."}), 200
-      return jsonify({"message": "destination not found."}), 404
+        db.session.delete(destination)
+        db.session.commit()
+    except:
+        return (
+            jsonify({"message": "An error occurred deleting the destination."}),
+            500,
+        )
+    return jsonify({"message": "destination deleted."}), 200
+    return jsonify({"message": "destination not found."}), 404
 
 
 # CREATE ITINERARY

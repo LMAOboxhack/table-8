@@ -12,7 +12,7 @@ CORS(app)
 print(platform.system())
 app.config[
    "SQLALCHEMY_DATABASE_URI"
-] = "mysql+mysqlconnector://root:root@localhost:3306/techtrek24"
+] = "mysql+mysqlconnector://root@localhost:3306/techtrek24"
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/techteck24'
 
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
@@ -400,7 +400,19 @@ def delete_itinerary(itinerary_id):
       return jsonify({"message": "Itinerary deleted successfully"})
    else:
       return jsonify({"message": "Itinerary not found"}), 404
+   
 
+# GET ALL DESTINATIONS PER ID
+@app.route("/itinerary/<itinerary_id>/destinations", methods=["GET"])
+def get_destinations_per_itinerary(itinerary_id):
+   itinerary_destinations = ItineraryDestination.query.filter_by(itinerary_id = itinerary_id)
+   output = []
+
+   for id in itinerary_destinations:
+      destination = Destination.query.filter_by(id=id.destination_id).first().json()
+      output.append(destination)
+   
+   return output
 
 if __name__ == "__main__":
    app.run(debug=True)

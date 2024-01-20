@@ -31,7 +31,7 @@ def generate_username_token(username):
 def decode_token(token):
    decode_token = jwt.decode(token, "secret", algorithms=["HS256"])
    username = decode_token["username"]
-   username_exist = User.query.get(username)
+   username_exist = User.query.filter_by(username)
    if username_exist:
       return True
    else:

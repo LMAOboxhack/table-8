@@ -70,9 +70,10 @@ def generate_token(password):
     return token
 
 def correct_password(username, password):
-    user = User.query.get(username)
-    correct_password = user.password
+    user = User.query.filter_by(username=username).first()
+
     if user:
+        correct_password = user.password
         if correct_password == password:
             return True
         else:

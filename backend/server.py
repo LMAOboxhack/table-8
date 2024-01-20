@@ -10,8 +10,13 @@
 # import smtplib
 # from email.mime.text import MIMEText
 
-# import auth, itinerary, backend.classes.destination as destination, validation
-# import validation as V
+<<<<<<< HEAD
+import auth, itinerary, backend.classes.destination as destination, validation
+import validation as V
+=======
+import tt1_8.backend.classes.auth as auth, itinerary, destination, tt1_8.backend.classes.validation as validation
+import tt1_8.backend.classes.validation as V
+>>>>>>> ac3cc17 (modified auth, add validation.py)
 
 
 # APP = Flask(__name__)

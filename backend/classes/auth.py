@@ -24,24 +24,19 @@ def register():
 def login():
     """Calls the login function from auth.py"""
     data = request.get_json()
-    hashed_password = V.generate_token(data['password'])
-    token = V.generate_token(data['username'])
-    if V.correct_password(data['username'], hashed_password):
-        return {
-            "is_success": True,
-            "token": token
-        }
-    else:
-        return {
-            "is_success": False
-        }
+    return dumps(
+        auth.auth_login(
+            data['username'], data['password']
+        )
+    )
 
 
 @APP.route("/auth/logout", methods=['POST'])
 def logout():
     """Calls the logout function from auth.py"""
     data = request.get_json()
-    return {
-        "is_success": True
-    }
-
+    return dumps(
+        auth.auth_logout(
+            data['token']
+        )
+    )

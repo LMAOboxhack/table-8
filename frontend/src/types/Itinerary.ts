@@ -17,7 +17,7 @@ export interface Itinerary {
 
 export type Destination = {
   id: number
-  countryId: number
+  country: Country
   name: string
   cost: number
   notes: string

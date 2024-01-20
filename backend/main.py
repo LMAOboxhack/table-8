@@ -5,7 +5,8 @@ from flask_cors import CORS
 import platform
 import jwt
 
-app = Flask(__name__, static_folder="static")
+app = Flask(__name__)
+CORS(app)
 
 # DO NOT REMOVE
 print(platform.system())
@@ -27,6 +28,14 @@ def generate_token(username):
                      algorithm='HS256').decode('utf-8')
    return token
 
+def decode_token(token):
+    decode_token = jwt.decode(token, "secret", algorithms=["HS256"])
+    username = decode_token["username"]
+    username_exist = User.query.get(username)
+    if username_exist:
+        return True
+    else:
+        abort(401, description="Please login first.")
 # check name is between 1-50 characters inclusive in length
 def valid_name(name):
    if len(name) < 1:

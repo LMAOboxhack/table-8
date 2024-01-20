@@ -2,7 +2,10 @@ import { Box, Text, Image, Badge, Button } from '@chakra-ui/react'
 import { Itinerary } from '@/types/Itinerary'
 import { useRouter } from 'next/router'
 
-const DashboardCard: React.FC<{ itinerary: Itinerary }> = ({ itinerary }) => {
+const DashboardCard: React.FC<{ itinerary: Itinerary; key: number }> = ({
+  itinerary,
+  key,
+}) => {
   const router = useRouter()
 
   return (

@@ -3,7 +3,11 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 import platform
+<<<<<<< Updated upstream
 # import tt1_8.backend.classes.validation as V
+=======
+import classes.validation as V
+>>>>>>> Stashed changes
 import jwt
 
 app = Flask(__name__, static_folder="static")
@@ -270,9 +274,14 @@ def delete_destination(destination_id):
 def create_itinerary():
     data = request.json
     new_itinerary = Itinerary(country_id=data['country_id'], user_id=data['user_id'], budget=data['budget'], title=data['title'])
-    db.session.add(new_itinerary)
-    db.session.commit()
-    return jsonify(new_itinerary.json()), 201
+    
+    try:
+        db.session.add(new_itinerary)
+        db.session.commit()
+    except:
+        return jsonify({"message": "An error occurred creating the itinerary."}), 500
+
+    return jsonify({"message": "Itinerary created successfully"}), 201
 
 # GET ALL ITINERARIES
 @app.route('/itinerary', methods=['GET'])

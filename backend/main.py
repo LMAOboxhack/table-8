@@ -3,7 +3,6 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 import platform
-import classes.validation as V
 import jwt
 
 app = Flask(__name__, static_folder="static")
@@ -70,6 +69,17 @@ def generate_token(password):
                        algorithm='HS256').decode('utf-8')
     return token
 
+def correct_password(username, password):
+    user = User.query.get(username)
+    correct_password = user.password
+    if user:
+        if correct_password == password:
+            return True
+        else:
+            abort(401, description="Wrong password.")
+    else:
+        abort(401, description="The username is not exist.")
+
 class Country(db.Model):
     tablename = "country"
     id = db.Column(db.Integer, primary_key=True)
@@ -110,7 +120,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     first_name = db.Column(db.String(50), nullable=False)
     last_name = db.Column(db.String(50), nullable=False)
-    password = db.Column(db.String(1000), nullable=False)
+    password = db.Column(db.String(20), nullable=False)
     username = db.Column(db.String(20), nullable=False)
 
     def init(self, username, first_name, last_name, password):
@@ -192,7 +202,7 @@ def login():
     data = request.get_json()
     hashed_password = generate_token(data['password'])
     token = generate_token(data['username'])
-    if V.correct_password(data['username'], hashed_password):
+    if correct_password(data['username'], hashed_password):
         return {
             "is_success": True,
             "token": token
@@ -211,7 +221,14 @@ def logout():
         "is_success": True
     }
 @app.route("/<string:user_id>/details", methods=['GET'])
-
+def dashboard(user_id):
+    user = User.query.filter_by(user_id=user_id)
+    destination = Destination.query.filter_by(user_id=user_id)
+    itinerarydestination = ItineraryDestination.query.filter_by(user_id=user_id)
+    itinerary = Itinerary.query.filter_by(user_id=user_id)
+    country = Country.query.filter_by(user_id=user_id)
+# itinerary title, budget, country, list of destination included
+    return True
 @app.route("/destination", methods=["POST"])
 def create_destination():
     data = request.get_json()
@@ -323,5 +340,3 @@ def delete_itinerary(itinerary_id):
 
 if __name__ == "__main__":
     app.run(debug=True)
-
-

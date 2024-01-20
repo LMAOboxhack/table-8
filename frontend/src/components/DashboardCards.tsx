@@ -1,7 +1,10 @@
 import { Box, Text, Image, Badge, Button } from '@chakra-ui/react'
 import { Itinerary } from '@/types/Itinerary'
+import { useRouter } from 'next/router'
 
 const DashboardCard: React.FC<{ itinerary: Itinerary }> = ({ itinerary }) => {
+  const router = useRouter()
+
   return (
     <Box
       borderWidth="1px"
@@ -10,6 +13,9 @@ const DashboardCard: React.FC<{ itinerary: Itinerary }> = ({ itinerary }) => {
       borderRadius="lg"
       overflow="hidden"
       minWidth="240px"
+      onClick={() => {
+        router.push('/1/itinerary')
+      }}
     >
       <Box
         p="6"

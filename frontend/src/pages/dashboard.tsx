@@ -29,6 +29,7 @@ import { Itinerary } from '@/types/Itinerary'
 const data: Itinerary[] = [
   {
     budget: 500.0,
+    id: 111,
     country: {
       id: 1,
       name: 'Singapore',

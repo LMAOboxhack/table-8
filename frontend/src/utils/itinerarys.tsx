@@ -1,50 +1,26 @@
 import { type SortingFn, type ColumnDef, type ColumnHelper, type Row } from '@tanstack/react-table';
 import {
-  QuestionComplexityEnum,
-  QuestionComplexityEnumToLevelMap,
-  type QuestionData,
-} from '../types/questions/questions';
+  type ItineraryData,
+} from '../types/itinerarys/itinerarys';
 import { Stack, Tag, Wrap, WrapItem } from '@chakra-ui/react';
-import QuestionComplexityTag from '../components/questions/QuestionComplexityTag';
-import QuestionViewIconButton from '../components/questions/QuestionViewIconButton';
-import QuestionEditIconButton from '../components/questions/QuestionEditIconButton';
-import QuestionDeleteIconButton from '../components/questions/QuestionDeleteIconButton';
+import ItineraryViewIconButton from '../components/itinerarys/ItineraryViewIconButton';
+import ItineraryEditIconButton from '../components/itinerarys/ItineraryEditIconButton';
+import ItineraryDeleteIconButton from '../components/itinerarys/ItineraryDeleteIconButton';
 import React, { useEffect, useState } from 'react';
-import QuestionsAPI from '../api/questions/questions';
+import ItinerarysAPI from '../pages/api/itinerarys/itinerarys';
 
-export interface QuestionDataRowData extends QuestionData {
+export interface ItineraryDataRowData extends ItineraryData {
   action?: undefined;
 }
 
-export const ComplexitySortingFn: SortingFn<QuestionData> = (
-  rowA: Row<QuestionData>,
-  rowB: Row<QuestionData>,
-  _columnId: string,
-): number => {
-  const rowAComplexity: QuestionComplexityEnum = rowA.getValue('complexity');
-  const rowBComplexity: QuestionComplexityEnum = rowB.getValue('complexity');
-  const rowAComplexityLevel: number = QuestionComplexityEnumToLevelMap[rowAComplexity];
-  const rowBComplexityLevel: number = QuestionComplexityEnumToLevelMap[rowBComplexity];
-  return rowAComplexityLevel > rowBComplexityLevel ? 1 : rowAComplexityLevel < rowBComplexityLevel ? -1 : 0;
-};
-
-export const QuestionsTableColumns = (
-  columnHelper: ColumnHelper<QuestionDataRowData>,
-  // Accept the setQuestionList prop
-  setQuestionList: React.Dispatch<React.SetStateAction<QuestionDataRowData[]>>,
-): Array<ColumnDef<QuestionDataRowData>> => {
-  const [categories, setAllCategories] = useState<string[]>([]);
-  useEffect(() => {
-    new QuestionsAPI()
-      .getCategories()
-      .then((categories) => {
-        setAllCategories(categories);
-      })
-      .catch(console.error);
-  }, []);
+export const ItinerarysTableColumns = (
+  columnHelper: ColumnHelper<ItineraryDataRowData>,
+  // Accept the setItineraryList prop
+  setItineraryList: React.Dispatch<React.SetStateAction<ItineraryDataRowData[]>>,
+): Array<ColumnDef<ItineraryDataRowData>> => {
 
   return [
-    columnHelper.accessor('questionID', {
+    columnHelper.accessor('id', {
       cell: (id): number => id.getValue(),
       header: 'ID',
     }),
@@ -52,52 +28,23 @@ export const QuestionsTableColumns = (
       cell: (title): string => title.getValue(),
       header: 'Title',
     }),
-    columnHelper.accessor('categories', {
-      meta: {
-        selectFilterOptions: categories,
-        selectOptionPrefix: 'Category',
-      },
-      header: 'Categories',
-      filterFn: 'arrIncludes',
-      enableColumnFilter: true,
-      cell: (categories) => (
-        <Stack direction="row" spacing={4}>
-          <Wrap>
-            {categories.getValue().map((category) => (
-              <WrapItem key={category}>
-                <Tag>{category}</Tag>
-              </WrapItem>
-            ))}
-          </Wrap>
-        </Stack>
-      ),
-    }),
-    columnHelper.accessor('complexity', {
-      meta: {
-        selectFilterOptions: Object.values(QuestionComplexityEnum),
-        selectOptionPrefix: 'Complexity',
-      },
-      sortingFn: ComplexitySortingFn,
-      header: 'Complexity',
-      cell: (complexity) => <QuestionComplexityTag questionComplexity={complexity.getValue()} />,
-    }),
     columnHelper.accessor('action', {
       header: '',
       enableSorting: false,
       enableGlobalFilter: false,
       cell: (cell) => (
         <Stack direction="row" spacing={2}>
-          <QuestionViewIconButton questionId={cell.row.original.questionID} title={cell.row.original.title} />
-          <QuestionEditIconButton questionId={cell.row.original.questionID} title={cell.row.original.title} />
-          <QuestionDeleteIconButton
-            questionId={cell.row.original.questionID}
-            onDelete={(questionId) => {
-              // Remove the deleted question from the list
-              setQuestionList((prevList) => prevList.filter((question) => question.questionID !== questionId));
+          <ItineraryViewIconButton itineraryId={cell.row.original.itineraryID} title={cell.row.original.title} />
+          <ItineraryEditIconButton itineraryId={cell.row.original.itineraryID} title={cell.row.original.title} />
+          <ItineraryDeleteIconButton
+            itineraryId={cell.row.original.itineraryID}
+            onDelete={(itineraryId) => {
+              // Remove the deleted itinerary from the list
+              setItineraryList((prevList) => prevList.filter((itinerary) => itinerary.itineraryID !== itineraryId));
             }}
           />
         </Stack>
       ),
     }),
-  ] as Array<ColumnDef<QuestionDataRowData>>;
+  ] as Array<ColumnDef<ItineraryDataRowData>>;
 };

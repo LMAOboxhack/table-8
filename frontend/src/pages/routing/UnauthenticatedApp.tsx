@@ -1,9 +1,9 @@
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
-import { CreateItinerary } from '../itinerary/CreateItinerary';
-import Itinerary from '../itinerary/Itenary';
-import { UpdateItinerary } from '../itinerary/UpdateItinerary';
-import ViewItinerary from '../itinerary/ViewItinerary';
+import { CreateItinerary } from '../itinerarys/CreateItinerary';
+import Itinerary from '../itinerarys/Itenary';
+import { UpdateItinerary } from '../itinerarys/UpdateItinerary';
+import ViewItinerary from '../itinerarys/ViewItinerary';
 
 const UnauthenticatedApp: React.FC = () => {
   return (

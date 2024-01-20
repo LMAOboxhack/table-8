@@ -6,12 +6,12 @@ import platform
 import jwt
 
 app = Flask(__name__, static_folder="static")
-
+CORS(app)
 # DO NOT REMOVE
 print(platform.system())
 app.config[
    "SQLALCHEMY_DATABASE_URI"
-] = "mysql+mysqlconnector://root@localhost:3306/techtrek24"
+] = "mysql+mysqlconnector://root:gioflame@localhost:3306/techtrek24"
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/techteck24'
 
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
@@ -248,8 +248,8 @@ def dashboard(user_id):
 @app.route("/destination", methods=["POST"])
 def create_destination():
    data = request.get_json()
-   token = data["token"]
-   decode_token(token)
+   # token = data["token"]
+   # decode_token(token)
    destination = Destination(
       country_id=data["country_id"],
       cost=data["cost"],
@@ -270,8 +270,8 @@ def update_destination(destination_id):
    destination = Destination.query.filter_by(destination_id=destination_id).first()
    if destination:
       data = request.get_json()
-      token = data["token"]
-      decode_token(token)
+      # token = data["token"]
+      # decode_token(token)
       destination.country_id = data["country_id"]
       destination.cost = data["cost"]
       destination.name = data["name"]
@@ -292,8 +292,8 @@ def delete_destination(destination_id):
    destination = Destination.query.filter_by(destination_id=destination_id).first()
    if destination:
       data = request.get_json()
-      token = data["token"]
-      decode_token(token)
+      # token = data["token"]
+      # decode_token(token)
       try:
          db.session.delete(destination)
          db.session.commit()

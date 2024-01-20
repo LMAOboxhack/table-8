@@ -57,17 +57,37 @@ const ItineraryPage = () => {
   };
 
   const [destinations, setDestinations] = useState([])
+  const [itinerary, setItinerary] = useState([])
 
   useEffect(() => {
-    async function getDestinations() {
-      let response = await fetch('http://127.0.0.1:5000/itinerary', {
+    async function getItinerary() {
+      let response = await fetch('http://localhost:5000/itinerary/1', {
           method: 'GET',
           mode: 'cors',
           headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({token:"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwYXNzd29yZCI6Im5kcDE5OTgifQ.fe3DWtqv4IySx4qK1j_vUetZHdtGZNsvRm2fkTtxzws"}),
+          // body: JSON.stringify({token:"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwYXNzd29yZCI6Im5kcDE5OTgifQ.fe3DWtqv4IySx4qK1j_vUetZHdtGZNsvRm2fkTtxzws"}),
+        });
+      response = await response.json();
+      console.log(response);
+      setItinerary(response);
+    }
+
+    getItinerary();
+  }, []);
+
+  useEffect(() => {
+    async function getDestinations() {
+      let response = await fetch('http://127.0.0.1:5000/itinerary/1/destinations', {
+          method: 'GET',
+          mode: 'cors',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          // body: JSON.stringify({token:"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwYXNzd29yZCI6Im5kcDE5OTgifQ.fe3DWtqv4IySx4qK1j_vUetZHdtGZNsvRm2fkTtxzws"}),
         });
       response = await response.json();
       setDestinations(response);

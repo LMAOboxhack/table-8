@@ -11,20 +11,18 @@ CORS(app)
 # DO NOT REMOVE
 print(platform.system())
 app.config[
-   "SQLALCHEMY_DATABASE_URI"
-] = "mysql+mysqlconnector://root@localhost:3306/techtrek24"
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/techteck24'
-
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+    "SQLALCHEMY_DATABASE_URI"
+] = "mysql+mysqlconnector://root:password@localhost:3306/techtrek24"
 
 db = SQLAlchemy(app)
 
 
 # generate a token based on unique username
 def generate_username_token(username):
-   msg = {"username": username}
-   token = jwt.encode(msg, "secret", algorithm="HS256").decode("utf-8")
-   return token
+    msg = {"username": username}
+    token = jwt.encode(msg, "secret", algorithm="HS256").decode("utf-8")
+    return token
+
 
 # decode token to check whether the user is logged in
 def decode_token(token):
@@ -78,6 +76,7 @@ def generate_token(password):
     token = jwt.encode(msg, "secret", algorithm="HS256").decode("utf-8")
     return token
 
+
 # check password correction
 def correct_password(username, password):
     user = User.query.filter_by(username=username).first()
@@ -104,6 +103,7 @@ class Country(db.Model):
     def json(self):
         return {"id": self.id, "name": self.name}
 
+
 class Destination(db.Model):
     tablename = "destination"
     id = db.Column(db.Integer, primary_key=True)
@@ -121,11 +121,11 @@ class Destination(db.Model):
 
     def json(self):
         return {
-                "id": self.id,
-                "country_id": self.country_id,
-                "cost": self.cost,
-                "name": self.name,
-                "notes": self.notes,
+            "id": self.id,
+            "country_id": self.country_id,
+            "cost": self.cost,
+            "name": self.name,
+            "notes": self.notes,
         }
 
 
@@ -146,11 +146,11 @@ class User(db.Model):
 
     def json(self):
         return {
-                "id": self.id,
-                "first_name": self.first_name,
-                "last_name": self.last_name,
-                "password": self.password,
-                "username": self.username,
+            "id": self.id,
+            "first_name": self.first_name,
+            "last_name": self.last_name,
+            "password": self.password,
+            "username": self.username,
         }
 
 
@@ -171,12 +171,12 @@ class Itinerary(db.Model):
 
     def json(self):
         return {
-                "id": self.id,
-                "country_id": self.country_id,
-                "user_id": self.user_id,
-                "budget": self.budget,
-                "title": self.title,
-            }
+            "id": self.id,
+            "country_id": self.country_id,
+            "user_id": self.user_id,
+            "budget": self.budget,
+            "title": self.title,
+        }
 
 
 class ItineraryDestination(db.Model):
@@ -194,9 +194,9 @@ class ItineraryDestination(db.Model):
 
     def json(self):
         return {
-                "id": self.id,
-                "destination_id": self.destination_id,
-                "itinerary_id": self.itinerary_id,
+            "id": self.id,
+            "destination_id": self.destination_id,
+            "itinerary_id": self.itinerary_id,
         }
 
 
@@ -269,6 +269,7 @@ def dashboard(user_id):
 
     return output
 
+
 @app.route("/countries", methods=["GET"])
 def get_countries():
     output = []
@@ -276,6 +277,7 @@ def get_countries():
     for c in countries:
         output.append(c.name)
     return output
+
 
 # CREATE DESTINATION
 @app.route("/destination", methods=["POST"])
@@ -288,7 +290,7 @@ def create_destination():
         cost=data["cost"],
         name=data["name"],
         notes=data["notes"],
-   )
+    )
     try:
         db.session.add(destination)
         db.session.commit()
@@ -396,26 +398,29 @@ def update_itinerary(itinerary_id):
 # DELETE ITINERARY BASED ON ITINERARY_ID
 @app.route("/itinerary/<itinerary_id>", methods=["DELETE"])
 def delete_itinerary(itinerary_id):
-   itinerary = Itinerary.query.get(itinerary_id)
-   if itinerary:
-      db.session.delete(itinerary)
-      db.session.commit()
-      return jsonify({"message": "Itinerary deleted successfully"})
-   else:
-      return jsonify({"message": "Itinerary not found"}), 404
-   
+    itinerary = Itinerary.query.get(itinerary_id)
+    if itinerary:
+        db.session.delete(itinerary)
+        db.session.commit()
+        return jsonify({"message": "Itinerary deleted successfully"})
+    else:
+        return jsonify({"message": "Itinerary not found"}), 404
+
 
 # GET ALL DESTINATIONS PER ID
 @app.route("/itinerary/<itinerary_id>/destinations", methods=["GET"])
 def get_destinations_per_itinerary(itinerary_id):
-   itinerary_destinations = ItineraryDestination.query.filter_by(itinerary_id = itinerary_id)
-   output = []
+    itinerary_destinations = ItineraryDestination.query.filter_by(
+        itinerary_id=itinerary_id
+    )
+    output = []
 
-   for id in itinerary_destinations:
-      destination = Destination.query.filter_by(id=id.destination_id).first().json()
-      output.append(destination)
-   
-   return output
+    for id in itinerary_destinations:
+        destination = Destination.query.filter_by(id=id.destination_id).first().json()
+        output.append(destination)
+
+    return output
+
 
 if __name__ == "__main__":
-   app.run(debug=True)
+    app.run(debug=True)

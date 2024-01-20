@@ -1,6 +1,7 @@
 import jwt
-from flask import abort
-from main import User
+from flask import abort, request
+from main import User, Destination
+
 # generate token
 def generate_token(username):
     msg = {

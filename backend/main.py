@@ -1,11 +1,12 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, abort
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 import platform
-import validation as V
+import tt1_8.backend.classes.validation as V
+import jwt
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder="static")
 
 # DO NOT REMOVE
 print(platform.system())
@@ -13,11 +14,61 @@ app.config[
     "SQLALCHEMY_DATABASE_URI"
 ] = "mysql+mysqlconnector://root:root@localhost:3306/techtrek24"
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/techteck24'
+
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {"pool_recycle": 299}
 
 db = SQLAlchemy(app)
 
+
+# generate token
+def generate_token(username):
+    msg = {
+        'username': username
+    }
+    token = jwt.encode(msg, 'secret',
+                       algorithm='HS256').decode('utf-8')
+    return token
+
+# check name is between 1-50 characters inclusive in length
+def valid_name(name):
+    if len(name) < 1:
+        abort(401, description="Name cannot be empty.")
+    elif len(name) > 50:
+        abort(401, description="Please enter a name between 1-50 characters long.")
+    else:
+        return True
+
+# check whether the username is already exist
+def valid_username(username):
+    username_exist = User.query.get(username)
+    if username_exist:
+        abort(401, description="Username is already exist.")
+    else:
+        return True
+
+# check password validation
+def valid_password(password):
+    if len(password) < 8:
+        abort(401, description="Password should contain at least 6 characters.")
+    elif len(password) > 20:
+        abort(401, description="length should be not be greater than 20.")
+    elif not any(char.isdigit() for char in password):
+        abort(401, description="Password should have at least one numeral.")         
+    elif not any(char.isupper() for char in password):
+        abort(401, description="Password should have at least one uppercase letter.")         
+    elif not any(char.islower() for char in password):
+        abort(401, description="Password should have at least one lowercase letter.")
+    else:
+        return True
+    
+# generate token
+def generate_token(password):
+    msg = {
+        'password': password
+    }
+    token = jwt.encode(msg, 'secret',
+                       algorithm='HS256').decode('utf-8')
+    return token
 
 class Country(db.Model):
     tablename = "country"
@@ -118,47 +169,48 @@ class ItineraryDestination(db.Model):
             "itinerary_id": self.itinerary_id,
         }
 
-
-@app.route("/auth/register", methods=["POST"])
+@app.route("/auth/register", methods=['POST'])
 def register():
     """Calls the register function from auth.py"""
     data = request.get_json()
-    password = data["password"]
-    V.valid_name(data["first_name"])
-    V.valid_name(data["last_name"])
-    V.valid_username(data["username"])
-    V.valid_password(password)
-    hashed_password = V.generate_token(password)
-    new_user = User(
-        first_name=data["first_name"],
-        last_name=data["last_name"],
-        username=data["username"],
-        password=hashed_password,
-    )
+    password = data['password']
+    valid_name(data['first_name'])
+    valid_name(data['last_name'])
+    valid_username(data['username'])
+    valid_password(password)
+    hashed_password = generate_token(password)
+    new_user = User(first_name=data['first_name'], last_name=data['last_name'], username=data['username'], password=hashed_password)
     db.session.add(new_user)
     db.session.commit()
-
+    
     return jsonify(new_user.json()), 201
 
 
-@app.route("/auth/login", methods=["POST"])
+@app.route("/auth/login", methods=['POST'])
 def login():
     """Calls the login function from auth.py"""
     data = request.get_json()
-    hashed_password = V.generate_token(data["password"])
-    token = V.generate_token(data["username"])
-    if V.correct_password(data["username"], hashed_password):
-        return {"is_success": True, "token": token}
+    hashed_password = generate_token(data['password'])
+    token = generate_token(data['username'])
+    if V.correct_password(data['username'], hashed_password):
+        return {
+            "is_success": True,
+            "token": token
+        }
     else:
-        return {"is_success": False}
+        return {
+            "is_success": False
+        }
 
 
-@app.route("/auth/logout", methods=["POST"])
+@app.route("/auth/logout", methods=['POST'])
 def logout():
     """Calls the logout function from auth.py"""
     data = request.get_json()
-    return {"is_success": True}
-
+    return {
+        "is_success": True
+    }
+@app.route("/<string:user_id>/details", methods=['GET'])
 
 @app.route("/destination", methods=["POST"])
 def create_destination():
@@ -177,9 +229,9 @@ def create_destination():
     return jsonify(destination.json()), 201
 
 
-@app.route("/destination/<string:id>", methods=["PUT"])
-def update_destination(id):
-    destination = Destination.query.filter_by(id=id).first()
+@app.route("/destination/<string:destination_id>", methods=["PUT"])
+def update_destination(destination_id):
+    destination = Destination.query.filter_by(destination_id=destination_id).first()
     if destination:
         data = request.get_json()
         destination.country_id = data["country_id"]
@@ -197,19 +249,9 @@ def update_destination(id):
     return jsonify({"message": "destination not found."}), 404
 
 
-@app.route("/destination/<string:id>", methods=["DELETE"])
-def delete_destination(id):
-    itinerary_destination = ItineraryDestination.query.filter_by(
-        destination_id=id
-    ).first()
-    print(itinerary_destination)
-    while itinerary_destination:
-        db.session.delete(itinerary_destination)
-        db.session.commit()
-        itinerary_destination = ItineraryDestination.query.filter_by(
-            destination_id=id
-        ).first()
-    destination = Destination.query.filter_by(id=id).first()
+@app.route("/destination/<string:destination_id>", methods=["DELETE"])
+def delete_destination(destination_id):
+    destination = Destination.query.filter_by(destination_id=destination_id).first()
     if destination:
         try:
             db.session.delete(destination)
@@ -221,6 +263,7 @@ def delete_destination(id):
             )
         return jsonify({"message": "destination deleted."}), 200
     return jsonify({"message": "destination not found."}), 404
+
 
 
 if __name__ == "__main__":

@@ -17,7 +17,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { FaLock, FaUserAlt } from "react-icons/fa";
 
 type IFormInputs = {
-  email: string;
+  username: string;
   password: string;
 };
 
@@ -28,11 +28,14 @@ export default function Register() {
     formState: { errors },
   } = useForm<IFormInputs>();
 
-  const onSubmit: SubmitHandler<IFormInputs> = (data) => console.log(data);
-
   const [showPassword, setShowPassword] = useState(false);
 
   const handleShowClick = () => setShowPassword(!showPassword);
+
+  const onSubmit: SubmitHandler<IFormInputs> = async (data: IFormInputs) => {
+    // Handle registration
+    console.log(data);
+  }
 
   return (
     <Flex

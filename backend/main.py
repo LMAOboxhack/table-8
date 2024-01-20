@@ -20,7 +20,7 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app)
 
 # generate token
-def generate_token(username):
+def generate_username_token(username):
    msg = {
       'username': username
    }
@@ -207,7 +207,7 @@ def login():
    """Calls the login function from auth.py"""
    data = request.get_json()
    hashed_password = generate_token(data['password'])
-   token = generate_token(data['username'])
+   token = generate_username_token(data['username'])
    if correct_password(data['username'], hashed_password):
       return {
             "is_success": True,
@@ -280,13 +280,13 @@ def update_destination(destination_id):
         destination.notes = data["notes"]
     try:
             db.session.commit()
-         except:
+        except:
                return (
                   jsonify({"message": "An error occurred updating the destination."}),
                   500,
                )
-         return jsonify(destination.json()), 200
-      return jsonify({"message": "destination not found."}), 404
+        return jsonify(destination.json()), 200
+    return jsonify({"message": "destination not found."}), 404
 
 # DELETE DESTINATION
 @app.route("/destination/<string:destination_id>", methods=["DELETE"])

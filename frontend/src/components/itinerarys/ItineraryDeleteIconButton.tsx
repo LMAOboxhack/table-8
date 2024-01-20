@@ -1,7 +1,7 @@
 import { DeleteIcon } from '@chakra-ui/icons';
 import { Tooltip, IconButton, useToast } from '@chakra-ui/react';
 import React from 'react';
-import ItinerarysAPI from '../../api/itinerarys/itinerarys';
+import ItinerarysAPI from '../../pages/api/itinerarys/itinerarys';
 
 interface ItineraryDeleteIconButtonProps {
   itineraryId: number;

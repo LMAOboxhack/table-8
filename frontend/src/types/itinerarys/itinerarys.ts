@@ -1,14 +1,12 @@
 export interface ItineraryData {
-  itineraryID: number;
-  countryID: number;
-  userID: number;
+  id: number;
+  country_id: number;
+  user_id: number;
+  budget: number;
   title: string;
 }
 
 export interface ItineraryPostData {
+  budget: number;
   title: string;
-  categories: string[];
-  complexity: string;
-  questionDescription: string;
-  linkToQuestion: string;
 }

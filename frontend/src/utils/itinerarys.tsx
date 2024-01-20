@@ -28,6 +28,10 @@ export const ItinerarysTableColumns = (
       cell: (title): string => title.getValue(),
       header: 'Title',
     }),
+    columnHelper.accessor('budget', {
+      cell: (budget): number => budget.getValue(),
+      header: 'Budget',
+    }),
     columnHelper.accessor('action', {
       header: '',
       enableSorting: false,

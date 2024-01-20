@@ -1,7 +1,7 @@
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { CreateItinerary } from '../itinerarys/CreateItinerary';
-import Itinerary from '../itinerarys/Itenary';
+import Itinerary from '../itinerarys/Itinerarys';
 import { UpdateItinerary } from '../itinerarys/UpdateItinerary';
 import ViewItinerary from '../itinerarys/ViewItinerary';
 

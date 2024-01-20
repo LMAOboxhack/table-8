@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import ItinerarysAPI from '../api/itinerarys/itinerarys';
 import { useParams } from 'react-router-dom';
-// import ItineraryForm from '../../components/content/ItineraryForm';
+import ItineraryForm from '../../components/content/ItineraryForm';
 import { type ItineraryPostData, type ItineraryData } from '../../types/itinerarys/itinerarys';
 
 export const UpdateItinerary: React.FC = () => {
@@ -33,15 +33,13 @@ export const UpdateItinerary: React.FC = () => {
     await new ItinerarysAPI().updateItinerary(itineraryIdString, itineraryData);
 
   return (
-    // <QuestionForm
-    //   formTitle={'Update Question'}
-    //   dialogBody={'Are you sure? Any progress on the form will not be saved. This action is irreversible!'}
-    //   dialogHeader={'Cancel Question Update'}
-    //   handleData={handleData}
-    //   isLoading={!dataLoaded}
-    //   initialData={questionData}
-    //   errorTitle={'Question update failed.'}
-    //   submitButtonLabel={'Update Question'}
-    // />
+    <ItineraryForm
+      formTitle={'Create Itinerary'}
+      dialogBody={'Are you sure? Any progress on the form will not be saved. This action is irreversible!'}
+      dialogHeader={'Cancel Itinerary Creation'}
+      handleData={handleData}
+      errorTitle={'Itinerary creation failed.'}
+      submitButtonLabel={'Submit Itinerary'}
+    />
   );
 };

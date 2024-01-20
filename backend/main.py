@@ -358,8 +358,16 @@ def create_itinerary():
         db.session.commit()
     except:
         return jsonify({"message": "An error occurred creating the itinerary."}), 500
+    
+    itinerary_details = {
+        "id": new_itinerary.id,
+        "country_id": new_itinerary.country_id,
+        "user_id": new_itinerary.user_id,
+        "budget": new_itinerary.budget,
+        "title": new_itinerary.title,
+    }
 
-    return jsonify({"message": "Itinerary created successfully"}), 201
+    return jsonify({"message": "Itinerary created successfully", "itinerary_details": itinerary_details}), 201
 
 
 # GET ALL ITINERARIES

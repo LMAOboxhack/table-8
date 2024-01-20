@@ -1,14 +1,27 @@
-export type Itinerary = {
+export interface Itinerary {
   title: String
   budget: number
-  country: string
-  destinations: Destination[]
+  country: Country
+  id: number
+  userId: number
+  itineraryDestinations: ItineraryDestinations[]
 }
 
-type Destination = {
+export interface ItineraryDestinations {
+  id: number
+  itineraryId: number
+  destination: Destination
+}
+
+export type Country = {
+  id: number
   name: string
-  cost: number
-  notes: number
+}
+
+export type Destination = {
   id: number
   countryId: number
+  name: string
+  cost: number
+  notes: string
 }

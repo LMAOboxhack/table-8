@@ -77,13 +77,13 @@ CREATE TABLE IF NOT EXISTS `itinerary_destination` (
   `itinerary_id` int(10) unsigned NOT NULL DEFAULT 0,
   KEY `PK` (`id`),
   KEY `IDDestinationFK` (`destination_id`),
-  KEY `IDItineraryFK` (`itineray_id`),
+  KEY `IDItineraryFK` (`itinerary_id`),
   CONSTRAINT `IDDestinationFK` FOREIGN KEY (`destination_id`) REFERENCES `destination` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `IDItineraryFK` FOREIGN KEY (`itineray_id`) REFERENCES `itinerary` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `IDItineraryFK` FOREIGN KEY (`itinerary_id`) REFERENCES `itinerary` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Dumping data for table techtrek24.itinerary_destination: ~6 rows (approximately)
-INSERT INTO `itinerary_destination` (`id`, `destination_id`, `itineray_id`) VALUES
+INSERT INTO `itinerary_destination` (`id`, `destination_id`, `itinerary_id`) VALUES
 	(1, 1, 1),
 	(2, 2, 1),
 	(3, 3, 1),

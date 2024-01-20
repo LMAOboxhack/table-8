@@ -1,8 +1,10 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, abort
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 import platform
+# import tt1_8.backend.classes.validation as V
+import jwt
 
 app = Flask(__name__, static_folder="static")
 
@@ -17,6 +19,56 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy(app)
 
+
+# generate token
+def generate_token(username):
+    msg = {
+        'username': username
+    }
+    token = jwt.encode(msg, 'secret',
+                       algorithm='HS256').decode('utf-8')
+    return token
+
+# check name is between 1-50 characters inclusive in length
+def valid_name(name):
+    if len(name) < 1:
+        abort(401, description="Name cannot be empty.")
+    elif len(name) > 50:
+        abort(401, description="Please enter a name between 1-50 characters long.")
+    else:
+        return True
+
+# check whether the username is already exist
+def valid_username(username):
+    username_exist = User.query.get(username)
+    if username_exist:
+        abort(401, description="Username is already exist.")
+    else:
+        return True
+
+# check password validation
+def valid_password(password):
+    if len(password) < 8:
+        abort(401, description="Password should contain at least 6 characters.")
+    elif len(password) > 20:
+        abort(401, description="length should be not be greater than 20.")
+    elif not any(char.isdigit() for char in password):
+        abort(401, description="Password should have at least one numeral.")         
+    elif not any(char.isupper() for char in password):
+        abort(401, description="Password should have at least one uppercase letter.")         
+    elif not any(char.islower() for char in password):
+        abort(401, description="Password should have at least one lowercase letter.")
+    else:
+        return True
+    
+# generate token
+def generate_token(password):
+    msg = {
+        'password': password
+    }
+    token = jwt.encode(msg, 'secret',
+                       algorithm='HS256').decode('utf-8')
+    return token
 
 class Country(db.Model):
     tablename = "country"
@@ -58,7 +110,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     first_name = db.Column(db.String(50), nullable=False)
     last_name = db.Column(db.String(50), nullable=False)
-    password = db.Column(db.String(20), nullable=False)
+    password = db.Column(db.String(1000), nullable=False)
     username = db.Column(db.String(20), nullable=False)
 
     def init(self, username, first_name, last_name, password):
@@ -117,6 +169,48 @@ class ItineraryDestination(db.Model):
             "itinerary_id": self.itinerary_id,
         }
 
+@app.route("/auth/register", methods=['POST'])
+def register():
+    """Calls the register function from auth.py"""
+    data = request.get_json()
+    password = data['password']
+    valid_name(data['first_name'])
+    valid_name(data['last_name'])
+    valid_username(data['username'])
+    valid_password(password)
+    hashed_password = generate_token(password)
+    new_user = User(first_name=data['first_name'], last_name=data['last_name'], username=data['username'], password=hashed_password)
+    db.session.add(new_user)
+    db.session.commit()
+    
+    return jsonify(new_user.json()), 201
+
+
+@app.route("/auth/login", methods=['POST'])
+def login():
+    """Calls the login function from auth.py"""
+    data = request.get_json()
+    hashed_password = generate_token(data['password'])
+    token = generate_token(data['username'])
+    if V.correct_password(data['username'], hashed_password):
+        return {
+            "is_success": True,
+            "token": token
+        }
+    else:
+        return {
+            "is_success": False
+        }
+
+
+@app.route("/auth/logout", methods=['POST'])
+def logout():
+    """Calls the logout function from auth.py"""
+    data = request.get_json()
+    return {
+        "is_success": True
+    }
+@app.route("/<string:user_id>/details", methods=['GET'])
 
 @app.route("/destination", methods=["POST"])
 def create_destination():
@@ -171,5 +265,58 @@ def delete_destination(destination_id):
     return jsonify({"message": "destination not found."}), 404
 
 
+# CREATE ITINERARY
+@app.route('/itinerary', methods=['POST'])
+def create_itinerary():
+    data = request.json
+    new_itinerary = Itinerary(country_id=data['country_id'], user_id=data['user_id'], budget=data['budget'], title=data['title'])
+    db.session.add(new_itinerary)
+    db.session.commit()
+    return jsonify(new_itinerary.json()), 201
+
+# GET ALL ITINERARIES
+@app.route('/itinerary', methods=['GET'])
+def get_itineraries():
+    itineraries = Itinerary.query.all()
+    return jsonify([itinerary.json() for itinerary in itineraries])
+
+# GET 1 ITINERARY BASED ON ITINERARY_ID
+@app.route('/itinerary/<itinerary_id>', methods=['GET'])
+def get_itinerary(itinerary_id):
+    itinerary = Itinerary.query.get(itinerary_id)
+    if itinerary:
+        return jsonify(itinerary.json())
+    else:
+        return jsonify({"message": "Itinerary not found"}), 404
+
+# UPDATE ITINERARY BASED ON ITINERARY_ID
+@app.route('/itinerary/<itinerary_id>', methods=['PUT'])
+def update_itinerary(itinerary_id):
+    itinerary = Itinerary.query.get(itinerary_id)
+    if itinerary:
+        data = request.json
+        itinerary.country_id = data['country_id']
+        itinerary.user_id = data['user_id']
+        itinerary.budget = data['budget']
+        itinerary.title = data['title']
+        db.session.commit()
+        return jsonify(itinerary.json())
+    else:
+        return jsonify({"message": "Itinerary not found"}), 404
+
+# DELETE ITINERARY BASED ON ITINERARY_ID
+@app.route('/itinerary/<itinerary_id>', methods=['DELETE'])
+def delete_itinerary(itinerary_id):
+    itinerary = Itinerary.query.get(itinerary_id)
+    if itinerary:
+        db.session.delete(itinerary)
+        db.session.commit()
+        return jsonify({"message": "Itinerary deleted successfully"})
+    else:
+        return jsonify({"message": "Itinerary not found"}), 404
+
+
 if __name__ == "__main__":
     app.run(debug=True)
+
+

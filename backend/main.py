@@ -92,11 +92,12 @@ class Country(db.Model):
    id = db.Column(db.Integer, primary_key=True)
    name = db.Column(db.String(50), nullable=False)
 
-   def __init__(self, name):
+   def __init__(self, id, name):
+      self.id = id
       self.name = name
 
    def json(self):
-      return {"name": self.name}
+      return {"id": self.id, "name": self.name}
 
 class Destination(db.Model):
    tablename = "destination"
@@ -106,7 +107,8 @@ class Destination(db.Model):
    name = db.Column(db.String(50), nullable=False)
    notes = db.Column(db.Text, nullable=True)
 
-   def __init__(self, country_id, cost, name, notes):
+   def __init__(self, id, country_id, cost, name, notes):
+      self.id = id
       self.country_id = country_id
       self.cost = cost
       self.name = name
@@ -114,6 +116,7 @@ class Destination(db.Model):
 
    def json(self):
       return {
+            "id": self.id,
             "country_id": self.country_id,
             "cost": self.cost,
             "name": self.name,
@@ -128,7 +131,8 @@ class User(db.Model):
    password = db.Column(db.String(20), nullable=False)
    username = db.Column(db.String(20), nullable=False)
 
-   def init(self, username, first_name, last_name, password):
+   def init(self, id, username, first_name, last_name, password):
+      self.id = id
       self.username = username
       self.first_name = first_name
       self.last_name = last_name
@@ -136,6 +140,7 @@ class User(db.Model):
 
    def json(self):
       return {
+            "id": self.id,
             "first_name": self.first_name,
             "last_name": self.last_name,
             "password": self.password,
@@ -150,7 +155,8 @@ class Itinerary(db.Model):
    budget = db.Column(db.Float, nullable=False)
    title = db.Column(db.String(100), nullable=False)
 
-   def init(self, country_id, user_id, budget, title):
+   def init(self, id, country_id, user_id, budget, title):
+      self.id = id
       self.country_id = country_id
       self.user_id = user_id
       self.budget = budget
@@ -158,6 +164,7 @@ class Itinerary(db.Model):
 
    def json(self):
       return {
+            "id": self.id,
             "country_id": self.country_id,
             "user_id": self.user_id,
             "budget": self.budget,
@@ -172,12 +179,14 @@ class ItineraryDestination(db.Model):
    )
    itinerary_id = db.Column(db.Integer, db.ForeignKey("itinerary.id"), nullable=False)
 
-   def init(self, destination_id, itinerary_id):
+   def init(self, id, destination_id, itinerary_id):
+      self.id = id
       self.destination_id = destination_id
       self.itinerary_id = itinerary_id
 
    def json(self):
       return {
+            "id": self.id,
             "destination_id": self.destination_id,
             "itinerary_id": self.itinerary_id,
       }
@@ -239,11 +248,21 @@ def dashboard(user_id):
 
       for id in itinerary_destination:
          destination = Destination.query.filter_by(id=id.destination_id).first()
-         destinations.append(destination.name)
+         destinations.append(destination.json())
 
-      output.append({"title": i.title, "budget": i.budget, "country": country, "destinations": destinations})
+      output.append({"id": i.id, "title": i.title, "budget": i.budget, "country": country, "destinations": destinations})
 
    return output
+
+@app.route("/countries", methods=["GET"])
+def get_countries():
+   countries = Country.query.all()
+   return jsonify([country.json() for country in countries])
+
+@app.route("/destinations", methods=["GET"])
+def get_destinations():
+   destinations = Destination.query.all()
+   return jsonify([destination.json() for destination in destinations])
 
 @app.route("/destination", methods=["POST"])
 def create_destination():

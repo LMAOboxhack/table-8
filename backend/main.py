@@ -203,7 +203,6 @@ class ItineraryDestination(db.Model):
 # CREATE USER
 @app.route("/auth/register", methods=["POST"])
 def register():
-    """Calls the register function from auth.py"""
     data = request.get_json()
     password = data["password"]
     valid_name(data["first_name"])
@@ -226,7 +225,6 @@ def register():
 # LOGIN
 @app.route("/auth/login", methods=["POST"])
 def login():
-    """Calls the login function from auth.py"""
     data = request.get_json()
     hashed_password = generate_token(data["password"])
     token = generate_username_token(data["username"])
@@ -239,7 +237,6 @@ def login():
 # LOGOUT
 @app.route("/auth/logout", methods=["POST"])
 def logout():
-    """Calls the logout function from auth.py"""
     data = request.get_json()
     return {"is_success": True}
 

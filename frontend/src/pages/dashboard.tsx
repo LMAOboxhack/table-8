@@ -1,5 +1,6 @@
 import DashboardCard from '@/components/DashboardCards'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import axios from 'axios'
 
 import {
   Flex,
@@ -15,10 +16,10 @@ import {
   FormControl,
   FormLabel,
   Input,
-  Textarea,
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
+  Select,
 } from '@chakra-ui/react'
 import { ChevronRightIcon } from '@chakra-ui/icons'
 import { Itinerary } from '@/types/Itinerary'
@@ -89,8 +90,34 @@ const data: Itinerary[] = [
 ]
 
 function Dashboard() {
+  const [formData, setFormData] = useState({
+    title: '',
+    budget: '',
+    country: '',
+  })
   const [isOpen, setIsOpen] = useState(false)
+  const [inputValue, setInputValue] = useState('') // Initialize state for input value
+  const [country, setCountry] = useState([])
+  useEffect(() => {
+    axios
+      .get('/countries')
+      .then((response: any) => {
+        setCountry(response.data)
+      })
+      .catch((error) => {
+        console.error('There was an error fetching the data', error)
+      })
+  }, [])
 
+  const handleChange = (e: any) => {
+    const { name, value } = e.target
+    console.log(e.target.name)
+
+    setFormData({
+      ...formData,
+      [name]: value,
+    })
+  }
   const onClose = () => {
     setIsOpen(false)
   }
@@ -99,8 +126,19 @@ function Dashboard() {
     setIsOpen(true)
   }
 
-  const handleSubmit = (value: any) => {
-    console.log(value)
+  const handleSubmit = (e: any) => {
+    e.preventDefault()
+
+    // const response = await fetch('http://localhost:5000/itinerary', {
+    //   method: 'POST',
+    //   mode: 'cors',
+    //   headers: {
+    //     Accept: 'application/json',
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: JSON.stringify({ username, password }),
+    // })
+    console.log(formData)
   }
 
   return (
@@ -117,8 +155,8 @@ function Dashboard() {
           </Box>
         </Flex>
         <Flex flexWrap="wrap" gap={12} justifyContent="space-between">
-          {data.map((d) => (
-            <DashboardCard itinerary={d} key={'0'} />
+          {data.map((d, i) => (
+            <DashboardCard itinerary={d} key={i} />
           ))}
         </Flex>
       </Box>
@@ -128,26 +166,49 @@ function Dashboard() {
         <ModalContent>
           <ModalHeader>Create Itinerary</ModalHeader>
           <ModalCloseButton />
-          <form onSubmit={(v) => handleSubmit(v)}>
+          <form>
             <ModalBody>
               <FormControl isRequired>
                 <FormLabel>Title</FormLabel>
-                <Input type="text" placeholder="Enter your name" />
+                <Input
+                  type="text"
+                  value={formData.title}
+                  onChange={handleChange}
+                  name="title"
+                  placeholder="Enter your name"
+                />
               </FormControl>
               <FormControl isRequired mt={4}>
                 <FormLabel>Budget</FormLabel>
-                <Input type="number" placeholder="Enter your budget" />
+                <Input
+                  type="number"
+                  value={formData.budget}
+                  onChange={handleChange}
+                  name="budget"
+                  placeholder="Enter your budget"
+                />
               </FormControl>
-              <FormControl mt={4} isRequired>
+              <FormControl mt={4}>
                 <FormLabel>Country</FormLabel>
-                <Input type="text" placeholder="Enter your country" />
+                <Select
+                  value={formData.country}
+                  name="country"
+                  onChange={handleChange}
+                  placeholder="Enter your country"
+                >
+                  {country.map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </Select>
               </FormControl>
             </ModalBody>
             <ModalFooter>
               <Button colorScheme="blue" mr={3} onClick={onClose}>
                 Close
               </Button>
-              <Button colorScheme="green" type="submit">
+              <Button colorScheme="green" onClick={handleSubmit}>
                 Submit
               </Button>
             </ModalFooter>

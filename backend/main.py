@@ -3,8 +3,9 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 import platform
+import validation as V
 
-app = Flask(__name__, static_folder="static")
+app = Flask(__name__)
 
 # DO NOT REMOVE
 print(platform.system())
@@ -12,8 +13,8 @@ app.config[
     "SQLALCHEMY_DATABASE_URI"
 ] = "mysql+mysqlconnector://root:root@localhost:3306/techtrek24"
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/techteck24'
-
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {"pool_recycle": 299}
 
 db = SQLAlchemy(app)
 
@@ -117,6 +118,47 @@ class ItineraryDestination(db.Model):
             "itinerary_id": self.itinerary_id,
         }
 
+@app.route("/auth/register", methods=['POST'])
+def register():
+    """Calls the register function from auth.py"""
+    data = request.get_json()
+    password = data['password']
+    V.valid_name(data['first_name'])
+    V.valid_name(data['last_name'])
+    V.valid_username(data['username'])
+    V.valid_password(password)
+    hashed_password = V.generate_token(password)
+    new_user = User(first_name=data['first_name'], last_name=data['last_name'], username=data['username'], password=hashed_password)
+    db.session.add(new_user)
+    db.session.commit()
+    
+    return jsonify(new_user.json()), 201
+
+
+@app.route("/auth/login", methods=['POST'])
+def login():
+    """Calls the login function from auth.py"""
+    data = request.get_json()
+    hashed_password = V.generate_token(data['password'])
+    token = V.generate_token(data['username'])
+    if V.correct_password(data['username'], hashed_password):
+        return {
+            "is_success": True,
+            "token": token
+        }
+    else:
+        return {
+            "is_success": False
+        }
+
+
+@app.route("/auth/logout", methods=['POST'])
+def logout():
+    """Calls the logout function from auth.py"""
+    data = request.get_json()
+    return {
+        "is_success": True
+    }
 
 @app.route("/destination", methods=["POST"])
 def create_destination():
@@ -135,9 +177,9 @@ def create_destination():
     return jsonify(destination.json()), 201
 
 
-@app.route("/destination/<string:destination_id>", methods=["PUT"])
-def update_destination(destination_id):
-    destination = Destination.query.filter_by(destination_id=destination_id).first()
+@app.route("/destination/<string:id>", methods=["PUT"])
+def update_destination(id):
+    destination = Destination.query.filter_by(id=id).first()
     if destination:
         data = request.get_json()
         destination.country_id = data["country_id"]
@@ -155,9 +197,10 @@ def update_destination(destination_id):
     return jsonify({"message": "destination not found."}), 404
 
 
-@app.route("/destination/<string:destination_id>", methods=["DELETE"])
-def delete_destination(destination_id):
-    destination = Destination.query.filter_by(destination_id=destination_id).first()
+@app.route("/destination/<string:id>", methods=["DELETE"])
+def delete_destination(id):
+    
+    destination = Destination.query.filter_by(id=id).first()
     if destination:
         try:
             db.session.delete(destination)

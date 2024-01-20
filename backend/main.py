@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 import platform
+import validation as V
 
 app = Flask(__name__)
 
@@ -117,6 +118,47 @@ class ItineraryDestination(db.Model):
             "itinerary_id": self.itinerary_id,
         }
 
+@app.route("/auth/register", methods=['POST'])
+def register():
+    """Calls the register function from auth.py"""
+    data = request.get_json()
+    password = data['password']
+    V.valid_name(data['first_name'])
+    V.valid_name(data['last_name'])
+    V.valid_username(data['username'])
+    V.valid_password(password)
+    hashed_password = V.generate_token(password)
+    new_user = User(first_name=data['first_name'], last_name=data['last_name'], username=data['username'], password=hashed_password)
+    db.session.add(new_user)
+    db.session.commit()
+    
+    return jsonify(new_user.json()), 201
+
+
+@app.route("/auth/login", methods=['POST'])
+def login():
+    """Calls the login function from auth.py"""
+    data = request.get_json()
+    hashed_password = V.generate_token(data['password'])
+    token = V.generate_token(data['username'])
+    if V.correct_password(data['username'], hashed_password):
+        return {
+            "is_success": True,
+            "token": token
+        }
+    else:
+        return {
+            "is_success": False
+        }
+
+
+@app.route("/auth/logout", methods=['POST'])
+def logout():
+    """Calls the logout function from auth.py"""
+    data = request.get_json()
+    return {
+        "is_success": True
+    }
 
 @app.route("/destination", methods=["POST"])
 def create_destination():

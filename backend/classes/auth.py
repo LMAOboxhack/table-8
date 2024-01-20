@@ -1,4 +1,4 @@
-import tt1_8.backend.classes.validation as V
+import tt1_8.backend.validation as V
 from flask import jsonify, request
 from main import app, db, User
 
@@ -24,19 +24,23 @@ def register():
 def login():
     """Calls the login function from auth.py"""
     data = request.get_json()
-    return dumps(
-        auth.auth_login(
-            data['username'], data['password']
-        )
-    )
+    hashed_password = V.generate_token(data['password'])
+    token = V.generate_token(data['username'])
+    if V.correct_password(data['username'], hashed_password):
+        return {
+            "is_success": True,
+            "token": token
+        }
+    else:
+        return {
+            "is_success": False
+        }
 
 
 @APP.route("/auth/logout", methods=['POST'])
 def logout():
     """Calls the logout function from auth.py"""
     data = request.get_json()
-    return dumps(
-        auth.auth_logout(
-            data['token']
-        )
-    )
+    return {
+        "is_success": True
+    }

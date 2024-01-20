@@ -1,0 +1,135 @@
+{
+	"info": {
+		"_postman_id": "a478fd6b-ed62-461e-b66a-1ffcb0868b9a",
+		"name": "TeckTrek Data Contract Results",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "19203064"
+	},
+	"item": [
+		{
+			"name": "GET ALL ITINERARIES",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/itinerary",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"itinerary"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET 1 ITINERARY",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/itinerary/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"itinerary",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CREATE 1 ITINERARY",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"country_id\": 1,\n  \"user_id\": 1,\n  \"budget\": 1000,\n  \"title\": \"Cooking class in Singapore\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/itinerary",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"itinerary"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UPDATE 1 ITINERARY",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"country_id\": 1,\n  \"user_id\": 1,\n  \"budget\": 2,\n  \"title\": \"Cooking class in Singapore\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/itinerary/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"itinerary",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE 1 ITINERARY",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/itinerary/6",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"itinerary",
+						"6"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

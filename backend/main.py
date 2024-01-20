@@ -3,7 +3,6 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 import platform
-import tt1_8.backend.classes.validation as V
 import jwt
 
 app = Flask(__name__, static_folder="static")

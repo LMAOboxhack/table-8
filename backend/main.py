@@ -29,6 +29,14 @@ def generate_token(username):
                        algorithm='HS256').decode('utf-8')
     return token
 
+def decode_token(token):
+    decode_token = jwt.decode(token, "secret", algorithms=["HS256"])
+    username = decode_token["username"]
+    username_exist = User.query.get(username)
+    if username_exist:
+        return True
+    else:
+        abort(401, description="Please login first.")
 # check name is between 1-50 characters inclusive in length
 def valid_name(name):
     if len(name) < 1:
@@ -242,6 +250,8 @@ def dashboard(user_id):
 @app.route("/destination", methods=["POST"])
 def create_destination():
     data = request.get_json()
+    token = data["token"]
+    decode_token(token)
     destination = Destination(
         country_id=data["country_id"],
         cost=data["cost"],
@@ -261,6 +271,8 @@ def update_destination(destination_id):
     destination = Destination.query.filter_by(destination_id=destination_id).first()
     if destination:
         data = request.get_json()
+        token = data["token"]
+        decode_token(token)
         destination.country_id = data["country_id"]
         destination.cost = data["cost"]
         destination.name = data["name"]
@@ -280,6 +292,9 @@ def update_destination(destination_id):
 def delete_destination(destination_id):
     destination = Destination.query.filter_by(destination_id=destination_id).first()
     if destination:
+        data = request.get_json()
+        token = data["token"]
+        decode_token(token)
         try:
             db.session.delete(destination)
             db.session.commit()

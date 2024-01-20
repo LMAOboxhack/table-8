@@ -1,11 +1,18 @@
-import "@/styles/globals.css";
+import React from 'react';
 import { ChakraProvider } from '@chakra-ui/react';
-import type { AppProps } from "next/app";
+import { BrowserRouter } from 'react-router-dom';
+import AppRouter from './pages/routing/AppRouter';
+import Navbar from './components/navigation/Navbar';
 
-export default function App({ Component, pageProps }: AppProps) {
+const App: React.FC = () => {
   return (
     <ChakraProvider>
-      <Component {...pageProps} />
+      <BrowserRouter>
+        <Navbar />
+        <AppRouter />
+      </BrowserRouter>
     </ChakraProvider>
   );
-}
+};
+
+export default App;

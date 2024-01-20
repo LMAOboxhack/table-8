@@ -40,7 +40,7 @@ export default function SignIn() {
     const res = await signIn('credentials', {
       username: data.username,
       password: data.password,
-      callbackUrl: '/',
+      callbackUrl: '/dashboard',
       redirect: false,
     });
 

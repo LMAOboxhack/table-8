@@ -1,31 +1,30 @@
 import DashboardCard from '@/components/DashboardCards'
-import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
+import { useEffect, useState } from 'react'
 
 import axios from 'axios'
 
+import { Itinerary } from '@/types/Itinerary'
+import { ChevronRightIcon } from '@chakra-ui/icons'
 import {
-  Flex,
   Box,
-  Button,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
-  FormControl,
-  FormLabel,
-  Input,
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
+  Button,
+  Flex,
+  FormControl,
+  FormLabel,
+  Input,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
   Select,
 } from '@chakra-ui/react'
-import { ChevronRightIcon } from '@chakra-ui/icons'
-import { Itinerary } from '@/types/Itinerary'
-import { log } from 'console'
 
 const data: Itinerary[] = [
   {
@@ -100,7 +99,7 @@ function Dashboard() {
   })
   const [isOpen, setIsOpen] = useState(false)
   const [inputValue, setInputValue] = useState('') // Initialize state for input value
-  const [country, setCountry] = useState([])
+  const [country, setCountry] = useState(['Singapore'])
   useEffect(() => {
     axios
       .get('/countries')

@@ -1,10 +1,6 @@
 import jwt
-import string
-import random
-import hashlib
-from flask import abort, request
-from main import app, db, Itinerary, User, Destination
-
+from flask import abort
+from main import User
 # generate token
 def generate_token(username):
     msg = {

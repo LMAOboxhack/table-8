@@ -44,3 +44,4 @@ def logout():
     return {
         "is_success": True
     }
+

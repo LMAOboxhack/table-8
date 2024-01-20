@@ -278,13 +278,13 @@ def update_destination(destination_id):
         destination.cost = data["cost"]
         destination.name = data["name"]
         destination.notes = data["notes"]
-    try:
-            db.session.commit()
+        try:
+                db.session.commit()
         except:
-               return (
-                  jsonify({"message": "An error occurred updating the destination."}),
-                  500,
-               )
+                return (
+                    jsonify({"message": "An error occurred updating the destination."}),
+                    500,
+                )
         return jsonify(destination.json()), 200
     return jsonify({"message": "destination not found."}), 404
 
